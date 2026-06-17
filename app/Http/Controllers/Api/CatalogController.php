@@ -36,7 +36,7 @@ class CatalogController extends Controller
         return response()->json([
             'status' => true,
             'data' => Brand::with('subCategory.category:id,name')
-                ->select('id', 'sub_category_id', 'name', 'slug', 'logo', 'image', 'status')
+                ->select('id', 'sub_category_id', 'name', 'slug', 'icon', 'image', 'status')
                 ->get()
         ]);
     }
