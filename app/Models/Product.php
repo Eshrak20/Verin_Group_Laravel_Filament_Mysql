@@ -33,4 +33,18 @@ class Product extends Model
     {
         return $this->belongsTo(Brand::class);
     }
+
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+
+    // ✅ ADD THIS (MISSING PART)
+    public function attributes()
+    {
+        return $this->belongsToMany(
+            Attribute::class,
+            'product_attributes'
+        );
+    }
 }
