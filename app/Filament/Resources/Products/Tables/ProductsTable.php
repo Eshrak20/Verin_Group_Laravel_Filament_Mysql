@@ -46,13 +46,13 @@ class ProductsTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                DeleteAction::make(), // ✅ delete button added
-            ])
-
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+                // DeleteAction::make(), // ✅ delete button added
             ]);
+
+            // ->toolbarActions([
+            //     BulkActionGroup::make([
+            //         DeleteBulkAction::make(),
+            //     ]),
+            // ]);
     }
 }
