@@ -16,7 +16,7 @@ use Filament\Tables\Table;
 class BrandResource extends Resource
 {
     protected static ?string $model = Brand::class;
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 6;
 
     protected static string|\UnitEnum|null $navigationGroup = 'Catalog Management';
     protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedCircleStack;

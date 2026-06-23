@@ -19,8 +19,10 @@ use Filament\Tables\Table;
 class FooterSettingResource extends Resource
 {
     protected static ?string $model = FooterSetting::class;
+    protected static ?int $navigationSort = 8;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTableCells;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedWrenchScrewdriver;
+    protected static string|\UnitEnum|null $navigationGroup = 'Site Management';
 
     protected static ?string $recordTitleAttribute = 'page_key';
     // 1. Force the form container to stretch full-width across the screen
