@@ -17,11 +17,12 @@ class ClientReview extends Model
         'is_active',
         'sort_order',
     ];
+    protected $appends = ['image_url'];
 
     public function getImageUrlAttribute(): ?string
     {
-        return $this->image
-            ? Storage::disk('public')->url($this->image)
+        return $this->client_image
+            ? Storage::disk('public')->url($this->client_image)
             : null;
     }
 }

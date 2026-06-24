@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Clients\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
@@ -14,8 +15,8 @@ class ClientForm
             ->components([
                 TextInput::make('name')
                     ->required(),
-                TextInput::make('logo')
-                    ->required()
+
+                FileUpload::make('logo')
                     ->image()
                     ->disk('public')
                     ->directory('clients'),

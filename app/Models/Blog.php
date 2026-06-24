@@ -47,11 +47,12 @@ class Blog extends Model
         3 => 'Lifestyle',
         4 => 'Education',
     ];
+    protected $appends = ['image_url'];
 
     public function getImageUrlAttribute(): ?string
     {
-        return $this->image
-            ? Storage::disk('public')->url($this->image)
+        return $this->featured_image
+            ? Storage::disk('public')->url($this->featured_image)
             : null;
     }
 }
