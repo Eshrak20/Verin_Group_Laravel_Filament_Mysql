@@ -28,9 +28,9 @@ class BannerForm
 
                 FileUpload::make('banner_image')
                     ->image()
+                    ->disk('public')
                     ->directory('banners')
                     ->required(),
-
                 Toggle::make('status')
                     ->default(true),
                 Toggle::make('is_slide')

@@ -15,7 +15,14 @@ class CatalogController extends Controller
     {
         return response()->json([
             'status' => true,
-            'data' => Category::select('id', 'name', 'slug', 'icon', 'image', 'status')->get()
+            'data' => Category::select(
+                'id',
+                'name',
+                'slug',
+                'icon',
+                'image',
+                'status'
+            )->get(),
         ]);
     }
 

@@ -47,4 +47,6 @@ class Product extends Model
             'product_attributes'
         );
     }
+
+   
 }

@@ -41,7 +41,9 @@ class BlogForm
                     ->default(null)
                     ->columnSpanFull(),
                 FileUpload::make('featured_image')
-                    ->image(),
+                    ->image()
+                    ->disk('public')
+                    ->directory('blogs'),
                 Select::make('category_id')
                     ->label('Category')
                     ->options(Blog::$categories)

@@ -28,7 +28,8 @@ class BrandForm
                 TextInput::make('icon')
                     ->default(null),
                 FileUpload::make('image')
-                    ->image(),
+                    ->disk('public')
+                    ->directory('brands'),
                 Textarea::make('short_description')
                     ->default(null)
                     ->columnSpanFull(),

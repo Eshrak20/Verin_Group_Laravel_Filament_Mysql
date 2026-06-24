@@ -28,7 +28,8 @@ class SubCategoryForm
                 TextInput::make('icon')
                     ->default(null),
                 FileUpload::make('image')
-                    ->image(),
+                    ->disk('public')
+                    ->directory('subcategories'),
                 Textarea::make('short_description')
                     ->default(null)
                     ->columnSpanFull(),

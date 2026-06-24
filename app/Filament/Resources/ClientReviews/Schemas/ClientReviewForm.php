@@ -19,7 +19,9 @@ class ClientReviewForm
                 TextInput::make('client_position')
                     ->default(null),
                 FileUpload::make('client_image')
-                    ->image(),
+                    ->image()
+                    ->disk('public')
+                    ->directory('clientsReview'),
                 TextInput::make('rating')
                     ->required()
                     ->numeric()

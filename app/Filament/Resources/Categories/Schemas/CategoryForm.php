@@ -21,7 +21,10 @@ class CategoryForm
                 TextInput::make('icon')
                     ->default(null),
                 FileUpload::make('image')
-                    ->image(),
+                    ->image()
+                    ->disk('public')
+                    ->directory('categories')
+                    ->visibility('public'),
                 Textarea::make('short_description')
                     ->default(null)
                     ->columnSpanFull(),

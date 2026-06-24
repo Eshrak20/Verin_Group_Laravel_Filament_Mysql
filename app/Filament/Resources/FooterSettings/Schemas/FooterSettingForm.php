@@ -22,7 +22,7 @@ class FooterSettingForm
                     ->columns(3)
                     ->columnSpanFull() // // 2 columns for content, 1 for sidebar
                     ->schema([
-                        
+
                         // Left Column: Main Information
                         Section::make('General Information')
                             ->columnSpan(2)
@@ -32,7 +32,7 @@ class FooterSettingForm
                                     ->unique(ignoreRecord: true)
                                     ->placeholder('e.g., home_page')
                                     ->extraAttributes(['style' => 'border-radius: 0px;']),
-                                
+
                                 TextInput::make('company_name')
                                     ->required()
                                     ->extraAttributes(['style' => 'border-radius: 0px;']),
@@ -51,6 +51,7 @@ class FooterSettingForm
                             ->schema([
                                 FileUpload::make('logo')
                                     ->image()
+                                    ->disk('public')
                                     ->directory('footers')
                                     ->imageEditor()
                                     ->extraAttributes(['style' => 'border-radius: 0px;']),
@@ -83,7 +84,7 @@ class FooterSettingForm
                                                 TextInput::make('url')->url()->required()->extraAttributes(['style' => 'border-radius: 0px;']),
                                                 TextInput::make('sort_order')->numeric()->default(0)->extraAttributes(['style' => 'border-radius: 0px;']),
                                                 Toggle::make('open_new_tab')->inline(false),
-                                            ])->itemLabel(fn ($state) => $state['title'] ?? 'New Link'),
+                                            ])->itemLabel(fn($state) => $state['title'] ?? 'New Link'),
                                     ]),
 
                                 'contact' => Tabs\Tab::make('Contact Details')
@@ -101,13 +102,13 @@ class FooterSettingForm
 
                                 'social' => Tabs\Tab::make('Social Networks')
                                     ->icon('heroicon-o-share')
-                                    ->hidden(fn ($get) => !$get('show_social_links'))
+                                    ->hidden(fn($get) => !$get('show_social_links'))
                                     ->schema([
                                         Repeater::make('socialLinks')
                                             ->relationship('socialLinks')
                                             ->columns(3)
                                             ->schema([
-                                                Select::make('platform')->options(['facebook'=>'FB','instagram'=>'IG','twitter'=>'X','linkedin'=>'LI'])->required()->extraAttributes(['style' => 'border-radius: 0px;']),
+                                                Select::make('platform')->options(['facebook' => 'FB', 'instagram' => 'IG', 'twitter' => 'X', 'linkedin' => 'LI'])->required()->extraAttributes(['style' => 'border-radius: 0px;']),
                                                 TextInput::make('url')->url()->required()->extraAttributes(['style' => 'border-radius: 0px;']),
                                                 TextInput::make('icon')->extraAttributes(['style' => 'border-radius: 0px;']),
                                             ]),

@@ -15,7 +15,10 @@ class ClientForm
                 TextInput::make('name')
                     ->required(),
                 TextInput::make('logo')
-                    ->required(),
+                    ->required()
+                    ->image()
+                    ->disk('public')
+                    ->directory('clients'),
                 Toggle::make('is_active')
                     ->required(),
                 TextInput::make('sort_order')
