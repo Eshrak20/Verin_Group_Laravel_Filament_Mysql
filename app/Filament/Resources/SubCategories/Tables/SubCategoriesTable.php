@@ -8,6 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter; // Imported SelectFilter
 use Filament\Tables\Table;
 
 class SubCategoriesTable
@@ -15,8 +16,8 @@ class SubCategoriesTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
-
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('slug')
@@ -40,7 +41,10 @@ class SubCategoriesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                // Simple relationship filter for Category
+                SelectFilter::make('category_id')
+                    ->label('Category')
+                    ->relationship('category', 'name'),
             ])
             ->recordActions([
                 EditAction::make(),

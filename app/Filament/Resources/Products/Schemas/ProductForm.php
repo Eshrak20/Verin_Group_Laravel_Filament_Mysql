@@ -10,9 +10,13 @@ use Filament\Schemas\Schema;
 use App\Models\SubCategory;
 use App\Models\Brand;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\FileUpload;
 use App\Models\AttributeValue;
+use App\Services\SkuGenerator;
+use App\Services\SlugService;
+use Illuminate\Support\Str;
 
 class ProductForm
 {
@@ -24,7 +28,11 @@ class ProductForm
 
             TextInput::make('name')
                 ->required()
-                ->maxLength(255),
+                ->maxLength(255)
+                ->live(onBlur: true)
+                ->afterStateUpdated(function (Set $set, ?string $state, string $context) {
+                    SlugService::generate($set, $state, $context);
+                }),
 
             TextInput::make('slug')
                 ->required()
@@ -36,7 +44,8 @@ class ProductForm
                 ->searchable()
                 ->preload()
                 ->live()
-                ->required(),
+                ->required()
+                ->afterStateUpdated(fn(Get $get, Set $set) => self::updateAllVariantSkus($get, $set)),
 
             Select::make('sub_category_id')
                 ->label('Sub Category')
@@ -48,7 +57,8 @@ class ProductForm
                 )
                 ->searchable()
                 ->live()
-                ->required(),
+                ->required()
+                ->afterStateUpdated(fn(Get $get, Set $set) => self::updateAllVariantSkus($get, $set)),
 
             Select::make('brand_id')
                 ->label('Brand')
@@ -58,9 +68,10 @@ class ProductForm
                         ->where('sub_category_id', $get('sub_category_id'))
                         ->pluck('name', 'id')
                 )
-                ->searchable(),
+                ->searchable()
+                ->live()
+                ->afterStateUpdated(fn(Get $get, Set $set) => self::updateAllVariantSkus($get, $set)),
 
-            /* ✅ ADD HERE */
             Select::make('attributes')
                 ->label('Product Options (Color, Size etc.)')
                 ->multiple()
@@ -89,32 +100,24 @@ class ProductForm
             Repeater::make('variants')
                 ->relationship()
                 ->label('Product Variants')
+                ->columnSpanFull()
                 ->schema([
-
 
                     TextInput::make('sku')
                         ->required()
                         ->maxLength(255)
-                        ->default(function (Get $get) {
+                        ->placeholder('Auto-generated SKU')
+                        ->formatStateUsing(function (Get $get, ?string $state) {
+                            if ($state) return $state;
 
-                            $category = \App\Models\Category::find($get('../../category_id'));
-                            $subCategory = \App\Models\SubCategory::find($get('../../sub_category_id'));
-                            $brand = \App\Models\Brand::find($get('../../brand_id'));
-
-                            $catCode = strtoupper(substr($category?->name ?? 'CAT', 0, 3));
-                            $subCode = strtoupper(substr($subCategory?->name ?? 'SUB', 0, 3));
-                            $brandCode = strtoupper(substr($brand?->name ?? 'BRD', 0, 3));
-
-                            $count = \App\Models\ProductVariant::count() + 1;
-
-                            return sprintf(
-                                '%s-%s-%s-%04d',
-                                $catCode,
-                                $subCode,
-                                $brandCode,
-                                $count
+                            return SkuGenerator::generate(
+                                $get('../../category_id'),
+                                $get('../../sub_category_id'),
+                                $get('../../brand_id'),
+                                $get('attribute_values') ?? []
                             );
                         }),
+
                     TextInput::make('price')
                         ->numeric()
                         ->required(),
@@ -134,12 +137,17 @@ class ProductForm
                         ->options(
                             AttributeValue::all()->pluck('value', 'id')
                         )
-                        ->relationship('attributeValues', 'value'),
-
-                    // ================= VARIANT IMAGES =================
-                    // ================= VARIANT IMAGES =================
-
-                    // ================= VARIANT IMAGES =================
+                        ->relationship('attributeValues', 'value')
+                        ->live()
+                        ->afterStateUpdated(function (Get $get, Set $set) {
+                            $sku = SkuGenerator::generate(
+                                $get('../../category_id'),
+                                $get('../../sub_category_id'),
+                                $get('../../brand_id'),
+                                $get('attribute_values') ?? []
+                            );
+                            $set('sku', $sku);
+                        }),
 
                     // ================= VARIANT IMAGES =================
 
@@ -156,8 +164,34 @@ class ProductForm
                                 ->reorderable(),
                         ]),
 
-                ])
-                ->columnSpanFull(),
+                ]),
         ]);
+    }
+
+    /**
+     * Correctly pulls the existing variants array via $get and recalculates SKUs
+     */
+    protected static function updateAllVariantSkus(Get $get, Set $set): void
+    {
+        // 1. Get the current active structural IDs from the root form state
+        $categoryId = $get('category_id');
+        $subCategoryId = $get('sub_category_id');
+        $brandId = $get('brand_id');
+
+        // 2. Fetch all currently open variant items inside the repeater
+        $variants = $get('variants') ?? [];
+
+        // 3. Loop through and replace the SKUs dynamically
+        foreach ($variants as $key => $variant) {
+            $variants[$key]['sku'] = SkuGenerator::generate(
+                $categoryId,
+                $subCategoryId,
+                $brandId,
+                $variant['attribute_values'] ?? []
+            );
+        }
+
+        // 4. Push the mutated data structure safely back to Livewire
+        $set('variants', $variants);
     }
 }

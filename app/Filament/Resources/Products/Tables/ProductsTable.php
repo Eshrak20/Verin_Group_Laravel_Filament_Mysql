@@ -11,6 +11,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductsTable
 {
@@ -37,22 +38,46 @@ class ProductsTable
                     ->boolean(),
             ])
 
+            // This ensures the entire table filters update cleanly when values alter
             ->filters([
-                SelectFilter::make('category')
+                // 1. Parent Category Filter
+                SelectFilter::make('category_id')
                     ->label('Category')
-                    ->relationship('category', 'name'),
-            ])
+                    ->relationship('category', 'name')
+                    ->searchable()
+                    ->preload(),
 
-            ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-                // DeleteAction::make(), // ✅ delete button added
+                // 2. Dependent Sub-Category Filter
+                SelectFilter::make('sub_category_id')
+                    ->label('Sub Category')
+                    ->relationship('subCategory', 'name', function (Builder $query) use ($table) {
+                        $categoryData = $table->getFilter('category_id')?->getState();
+                        $categoryId = $categoryData['value'] ?? null;
+
+                        if ($categoryId) {
+                            return $query->where('category_id', $categoryId);
+                        }
+
+                        return $query->whereNull('id');
+                    })
+                    ->searchable()
+                    ->preload(),
+
+                // 3. Dependent Brand Filter
+                SelectFilter::make('brand_id')
+                    ->label('Brand')
+                    ->relationship('brand', 'name', function (Builder $query) use ($table) {
+                        $subCategoryData = $table->getFilter('sub_category_id')?->getState();
+                        $subCategoryId = $subCategoryData['value'] ?? null;
+
+                        if ($subCategoryId) {
+                            return $query->where('sub_category_id', $subCategoryId);
+                        }
+
+                        return $query->whereNull('id');
+                    })
+                    ->searchable()
+                    ->preload(),
             ]);
-
-            // ->toolbarActions([
-            //     BulkActionGroup::make([
-            //         DeleteBulkAction::make(),
-            //     ]),
-            // ]);
     }
 }
