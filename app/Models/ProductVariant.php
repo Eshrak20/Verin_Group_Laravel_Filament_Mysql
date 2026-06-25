@@ -29,9 +29,15 @@ class ProductVariant extends Model
         );
     }
 
+    
+
     // optional (recommended)
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+    public function videos()
+    {
+        return $this->hasMany(ProductVariantVideo::class);
     }
 }

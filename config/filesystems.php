@@ -67,8 +67,27 @@ return [
             'url' => [
                 'secure' => true,
             ],
-            'throw' => true, // 👈 Add this line right here!
+            'throw' => true,
         ],
+
+        // 'cloudinary_video' => [
+        //     'driver' => 'cloudinary',
+        //     'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+        //     'api_key' => env('CLOUDINARY_API_KEY'),
+        //     'api_secret' => env('CLOUDINARY_API_SECRET'),
+        //     'url' => [
+        //         'secure' => true,
+        //     ],
+        //     // For packages reading raw parameters:
+        //     'upload' => [
+        //         'resource_type' => 'video',
+        //     ],
+        //     // For packages reading standard flysystem options:
+        //     'options' => [
+        //         'resource_type' => 'video',
+        //     ],
+        //     'throw' => true,
+        // ],
 
     ],
 

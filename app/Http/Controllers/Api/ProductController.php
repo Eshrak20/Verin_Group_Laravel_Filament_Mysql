@@ -19,7 +19,7 @@ class ProductController extends Controller
     public function index(Request $request): JsonResponse
     {
         // Start your query builder with relationships pre-loaded
-        $query = Product::query()->with(['category', 'subCategory', 'brand', 'variants.images']);
+        $query = Product::query()->with(['category', 'subCategory', 'brand', 'variants.images','variants.videos']);
 
         // Pass the builder instance, request context, and target search text keys down to the trait
         $products = $this->scopeFilterSortPaginate($query, $request, ['name', 'short_description']);

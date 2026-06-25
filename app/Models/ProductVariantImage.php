@@ -25,4 +25,5 @@ class ProductVariantImage extends Model
             ? Storage::disk('cloudinary')->url($this->image)
             : null;
     }
+ 
 }
