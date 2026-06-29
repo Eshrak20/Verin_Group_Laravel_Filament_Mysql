@@ -24,35 +24,37 @@ class BrandsTable
             ->columns([
                 TextColumn::make('name')
                     ->searchable(),
-                    
+
                 TextColumn::make('slug')
                     ->searchable(),
-                    
+
                 TextColumn::make('subCategory.name')
                     ->label('Sub Category')
                     ->searchable()
                     ->badge()
                     ->color('primary'),
-                    
+
                 TextColumn::make('subCategory.category.name')
                     ->label('Category')
                     ->searchable()
                     ->badge()
                     ->color('danger'),
-                    
+
                 TextColumn::make('icon')
                     ->searchable(),
-                    
-                ImageColumn::make('image'),
-                
+
+                ImageColumn::make('image')
+                    ->disk('public')
+                    ->visibility('public'),
+
                 IconColumn::make('status')
                     ->boolean(),
-                    
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                    
+
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
@@ -73,12 +75,12 @@ class BrandsTable
                             ->label('Sub Category')
                             ->options(function (callable $get) {
                                 $categoryId = $get('category_id');
-                                
+
                                 // Fallback: If no parent Category is chosen, load all Sub Categories
                                 if (! $categoryId) {
                                     return SubCategory::pluck('name', 'id')->toArray();
                                 }
-                                
+
                                 // Reactive logic: Filter options matching only the selected parent Category
                                 return SubCategory::where('category_id', $categoryId)
                                     ->pluck('name', 'id')
@@ -91,15 +93,15 @@ class BrandsTable
                             // Apply Category filter scope
                             ->when(
                                 $data['category_id'],
-                                fn (Builder $query, $value): Builder => $query->whereHas(
+                                fn(Builder $query, $value): Builder => $query->whereHas(
                                     'subCategory.category',
-                                    fn (Builder $query) => $query->where('id', $value)
+                                    fn(Builder $query) => $query->where('id', $value)
                                 )
                             )
                             // Apply Sub-Category filter scope
                             ->when(
                                 $data['sub_category_id'],
-                                fn (Builder $query, $value): Builder => $query->where('sub_category_id', $value)
+                                fn(Builder $query, $value): Builder => $query->where('sub_category_id', $value)
                             );
                     }),
             ])

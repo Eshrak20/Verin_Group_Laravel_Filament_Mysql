@@ -19,7 +19,9 @@ class BannersTable
             ->columns([
                 TextColumn::make('page_name')
                     ->searchable(),
-                ImageColumn::make('banner_image'),
+                ImageColumn::make('banner_image')
+                    ->disk('public')
+                    ->visibility('public'),
                 IconColumn::make('status')
                     ->boolean(),
                 TextColumn::make('sorting_number')

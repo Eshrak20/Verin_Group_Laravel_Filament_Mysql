@@ -27,7 +27,9 @@ class BlogsTable
                     ->searchable(),
                 TextColumn::make('slug')
                     ->searchable(),
-                ImageColumn::make('featured_image'),
+                ImageColumn::make('featured_image')
+                    ->disk('public')
+                    ->visibility('public'),
                 TextColumn::make('category_id')
                     ->label('Category')
                     ->formatStateUsing(fn($state) => Blog::$categories[$state] ?? 'Unknown')

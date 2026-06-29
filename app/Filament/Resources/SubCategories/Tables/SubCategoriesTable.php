@@ -28,7 +28,9 @@ class SubCategoriesTable
                     ->color('primary'),
                 TextColumn::make('icon')
                     ->searchable(),
-                ImageColumn::make('image'),
+                ImageColumn::make('image')
+                    ->disk('public')
+                    ->visibility('public'),
                 IconColumn::make('status')
                     ->boolean(),
                 TextColumn::make('created_at')

@@ -12,7 +12,7 @@ class BannerController extends Controller
         $banner = Banner::where('page_name', $pageName)
             ->where('status', true)
             ->orderBy('sorting_number')
-            ->first();
+            ->get();
 
         if (!$banner) {
             return response()->json([

@@ -21,7 +21,9 @@ class ClientReviewsTable
                     ->searchable(),
                 TextColumn::make('client_position')
                     ->searchable(),
-                ImageColumn::make('client_image'),
+                ImageColumn::make('client_image')
+                    ->disk('public')
+                    ->visibility('public'),
                 TextColumn::make('rating')
                     ->numeric()
                     ->sortable(),
