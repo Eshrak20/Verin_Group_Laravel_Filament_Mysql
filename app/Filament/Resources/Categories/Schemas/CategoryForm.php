@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Categories\Schemas;
 
 use App\Services\SlugService;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
@@ -35,9 +36,12 @@ class CategoryForm
                     ->disk('public')
                     ->directory('categories')
                     ->visibility('public'),
-                Textarea::make('short_description')
-                    ->default(null)
-                    ->columnSpanFull(),
+                RichEditor::make('short_description')
+                    ->label('Short Description')
+                    ->columnSpanFull()
+                    ->extraInputAttributes([
+                        'style' => 'min-height: 100px;',
+                    ]),
                 Toggle::make('status')
                     ->required(),
             ]);

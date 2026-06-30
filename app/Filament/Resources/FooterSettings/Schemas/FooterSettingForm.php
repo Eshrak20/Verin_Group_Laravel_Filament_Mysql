@@ -4,6 +4,7 @@ namespace App\Filament\Resources\FooterSettings\Schemas;
 
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -36,10 +37,12 @@ class FooterSettingForm
                                 TextInput::make('company_name')
                                     ->required()
                                     ->extraAttributes(['style' => 'border-radius: 0px;']),
-
-                                Textarea::make('description')
-                                    ->rows(4)
-                                    ->extraAttributes(['style' => 'border-radius: 0px;']),
+                                RichEditor::make('description')
+                                    ->label('Description')
+                                    ->columnSpanFull()
+                                    ->extraInputAttributes([
+                                        'style' => 'min-height: 200px;',
+                                    ]),
 
                                 TextInput::make('copyright_text')
                                     ->extraAttributes(['style' => 'border-radius: 0px;']),

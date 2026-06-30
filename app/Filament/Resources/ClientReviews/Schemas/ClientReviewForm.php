@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ClientReviews\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
@@ -26,9 +27,12 @@ class ClientReviewForm
                     ->required()
                     ->numeric()
                     ->default(5),
-                Textarea::make('review')
-                    ->required()
-                    ->columnSpanFull(),
+                RichEditor::make('review')
+                    ->label('Review')
+                    ->columnSpanFull()
+                    ->extraInputAttributes([
+                        'style' => 'min-height: 200px;',
+                    ]),
                 TextInput::make('item')
                     ->required(),
                 Toggle::make('is_active')

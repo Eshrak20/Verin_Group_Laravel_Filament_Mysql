@@ -6,6 +6,7 @@ use App\Models\Blog;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -25,21 +26,39 @@ class BlogForm
                     ->default(null),
                 TextInput::make('slug')
                     ->required(),
-                Textarea::make('content')
-                    ->default(null)
-                    ->columnSpanFull(),
-                Textarea::make('summary')
-                    ->default(null)
-                    ->columnSpanFull(),
-                Textarea::make('excerpt')
-                    ->default(null)
-                    ->columnSpanFull(),
-                Textarea::make('content_bng')
-                    ->default(null)
-                    ->columnSpanFull(),
-                Textarea::make('summary_bng')
-                    ->default(null)
-                    ->columnSpanFull(),
+                RichEditor::make('content')
+                    ->label('English Content')
+                    ->columnSpanFull()
+                    ->extraInputAttributes([
+                        'style' => 'min-height: 200px;',
+                    ]),
+                RichEditor::make('summary')
+                    ->label('English Summary')
+                    ->columnSpanFull()
+                    ->extraInputAttributes([
+                        'style' => 'min-height: 150px;',
+                    ]),
+                RichEditor::make('excerpt')
+                    ->label('Excerpt')
+                    ->columnSpanFull()
+                    ->extraInputAttributes([
+                        'style' => 'min-height: 100px;',
+                    ]),
+
+                RichEditor::make('content_bng')
+                    ->label('Bangla Content')
+                    ->columnSpanFull()
+                    ->extraInputAttributes([
+                        'style' => 'min-height: 200px;',
+                    ]),
+                RichEditor::make('summary_bng')
+                    ->label('Bangla Summary')
+                    ->columnSpanFull()
+                    ->extraInputAttributes([
+                        'style' => 'min-height: 150px;',
+                    ]),
+
+
                 FileUpload::make('featured_image')
                     ->image()
                     ->disk('public')
@@ -57,9 +76,12 @@ class BlogForm
                     ->required(),
                 TextInput::make('meta_title')
                     ->default(null),
-                Textarea::make('meta_description')
-                    ->default(null)
-                    ->columnSpanFull(),
+                RichEditor::make('meta_description')
+                    ->label('Meta Description')
+                    ->columnSpanFull()
+                    ->extraInputAttributes([
+                        'style' => 'min-height: 150px;',
+                    ]),
                 TextInput::make('views')
                     ->required()
                     ->numeric()

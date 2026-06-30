@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Brands\Schemas;
 
 use App\Services\SlugService;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -40,9 +41,12 @@ class BrandForm
                 FileUpload::make('image')
                     ->disk('public')
                     ->directory('brands'),
-                Textarea::make('short_description')
-                    ->default(null)
-                    ->columnSpanFull(),
+                RichEditor::make('short_description')
+                    ->label('Short Description')
+                    ->columnSpanFull()
+                    ->extraInputAttributes([
+                        'style' => 'min-height: 100px;',
+                    ]),
                 Toggle::make('status')
                     ->required(),
             ]);
