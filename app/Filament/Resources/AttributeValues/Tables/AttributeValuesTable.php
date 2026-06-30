@@ -13,9 +13,8 @@ class AttributeValuesTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('attribute.name', 'asc')
             ->columns([
-
-                // ✅ FIXED: show attribute name instead of ID
                 TextColumn::make('attribute.name')
                     ->label('Attribute')
                     ->sortable()

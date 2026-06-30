@@ -163,15 +163,41 @@ class ProductForm
 
                                 ]),
 
+
                             Select::make('attribute_values')
                                 ->label('Options (Color / Size etc.)')
                                 ->multiple()
                                 ->searchable()
-                                ->options(AttributeValue::all()->pluck('value', 'id'))
                                 ->relationship('attributeValues', 'value')
+                                ->options(
+                                    AttributeValue::with('attribute')
+                                        ->join('attributes', 'attribute_values.attribute_id', '=', 'attributes.id')
+                                        ->orderBy('attributes.name')
+                                        ->orderBy('attribute_values.value')
+                                        ->select('attribute_values.*')
+                                        ->get()
+                                        ->mapWithKeys(fn($value) => [
+                                            $value->id => "{$value->attribute->name} : {$value->value}",
+                                        ])
+                                )
+                                ->getSearchResultsUsing(function (string $search) {
+                                    return AttributeValue::with('attribute')
+                                        ->join('attributes', 'attribute_values.attribute_id', '=', 'attributes.id')
+                                        ->where(function ($query) use ($search) {
+                                            $query->where('attribute_values.value', 'like', "%{$search}%")
+                                                ->orWhere('attributes.name', 'like', "%{$search}%");
+                                        })
+                                        ->orderBy('attributes.name')
+                                        ->orderBy('attribute_values.value')
+                                        ->select('attribute_values.*')
+                                        ->limit(50)
+                                        ->get()
+                                        ->mapWithKeys(fn($value) => [
+                                            $value->id => "{$value->attribute->name} : {$value->value}",
+                                        ]);
+                                })
                                 ->live()
                                 ->afterStateUpdated(function (Get $get, Set $set) {
-
                                     $sku = SkuGenerator::generate(
                                         $get('../../category_id'),
                                         $get('../../sub_category_id'),
