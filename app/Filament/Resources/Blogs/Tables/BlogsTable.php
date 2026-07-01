@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Blogs\Tables;
 
 use App\Models\Blog;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -71,6 +72,25 @@ class BlogsTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
+                Action::make('copy')
+                    ->label('Copy')
+                    ->icon('heroicon-o-document-duplicate')
+                    ->color('gray')
+                    ->action(function (Blog $record) {
+
+                        $newBlog = $record->replicate();
+
+                        // Optional: make title unique
+                        $newBlog->title = $record->title . ' (Copy)';
+                        $newBlog->slug = $record->slug . '-copy-' . time();
+
+                        $newBlog->published_at = null;
+                        $newBlog->views = 0;
+
+                        $newBlog->save();
+                    })
+                    ->successNotificationTitle('Blog copied successfully'),
+
                 EditAction::make(),
             ])
             ->toolbarActions([
