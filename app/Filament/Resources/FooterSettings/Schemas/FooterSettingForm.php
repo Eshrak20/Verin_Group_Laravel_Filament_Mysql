@@ -12,7 +12,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
-
+use Illuminate\Support\Str;
 class FooterSettingForm
 {
     public static function configure(Schema $schema): Schema
@@ -28,14 +28,19 @@ class FooterSettingForm
                         Section::make('General Information')
                             ->columnSpan(2)
                             ->schema([
-                                TextInput::make('page_key')
-                                    ->required()
-                                    ->unique(ignoreRecord: true)
-                                    ->placeholder('e.g., home_page')
-                                    ->extraAttributes(['style' => 'border-radius: 0px;']),
-
                                 TextInput::make('company_name')
                                     ->required()
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function ($state, callable $set) {
+                                        $set('company_key', Str::slug($state));
+                                    })
+                                    ->extraAttributes(['style' => 'border-radius: 0px;']),
+
+                                TextInput::make('company_key')
+                                    ->required()
+                                    ->unique(ignoreRecord: true)
+                                    ->disabled()
+                                    ->dehydrated() // still saves in DB
                                     ->extraAttributes(['style' => 'border-radius: 0px;']),
                                 RichEditor::make('description')
                                     ->label('Description')

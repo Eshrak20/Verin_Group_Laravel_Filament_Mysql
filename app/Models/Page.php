@@ -10,7 +10,7 @@ class Page extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'site_id',
+        'footer_setting_id',
         'page_type',
         'title',
         'short_description',
@@ -19,13 +19,8 @@ class Page extends Model
         'published_at',
     ];
 
-    protected $casts = [
-        'is_published' => 'boolean',
-        'published_at' => 'datetime',
-    ];
-
-    public function site()
+    public function footerSetting()
     {
-        return $this->belongsTo(Site::class);
+        return $this->belongsTo(FooterSetting::class);
     }
 }

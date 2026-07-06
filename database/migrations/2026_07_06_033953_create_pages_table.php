@@ -9,12 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pages', function (Blueprint $table) {
+
             $table->id();
 
-            $table->foreignId('site_id')
+            $table->foreignId('footer_setting_id')
                 ->constrained()
                 ->cascadeOnDelete();
 
+            // ✅ REQUIRED FIELD (you missed this)
             $table->string('page_type');
 
             $table->string('title');
@@ -31,7 +33,11 @@ return new class extends Migration
 
             $table->softDeletes();
 
-            $table->unique(['site_id', 'page_type']);
+            // ✅ correct unique constraint (ONLY ONCE)
+            $table->unique([
+                'footer_setting_id',
+                'page_type'
+            ]);
         });
     }
 

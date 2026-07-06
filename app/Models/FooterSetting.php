@@ -11,7 +11,7 @@ class FooterSetting extends Model
     use HasFactory;
 
     protected $fillable = [
-        'page_key',
+        'company_key',
         'logo',
         'company_name',
         'description',
@@ -41,5 +41,9 @@ class FooterSetting extends Model
         return $this->logo
             ? Storage::disk('public')->url($this->logo)
             : null;
+    }
+    public function pages()
+    {
+        return $this->hasMany(Page::class);
     }
 }
