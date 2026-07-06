@@ -19,7 +19,7 @@ class ProductController extends Controller
     public function index(Request $request): JsonResponse
     {
         // Start your query builder with relationships pre-loaded
-        $query = Product::query()->with(['category', 'subCategory', 'brand', 'variants.images','variants.videos']);
+        $query = Product::query()->with(['category', 'subCategory', 'brand', 'variants.images', 'variants.videos']);
 
         // Pass the builder instance, request context, and target search text keys down to the trait
         $products = $this->scopeFilterSortPaginate($query, $request, ['name', 'short_description']);
@@ -37,5 +37,34 @@ class ProductController extends Controller
                 // 'prev_page'    => $products->previousPageUrl(),
             ],
         ], 200);
+    }
+    public function show(string $slug): JsonResponse
+    {
+        $product = Product::with([
+            'category',
+            'subCategory',
+            'brand',
+            'variants.images',
+            'variants.videos',
+            'attributes',
+            'attributes' => function ($query) {
+                $query->with('values');
+            },
+        ])
+            ->where('slug', $slug)
+            ->first();
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not found.',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Product retrieved successfully.',
+            'data' => $product,
+        ]);
     }
 }

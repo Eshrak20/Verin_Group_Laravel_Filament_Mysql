@@ -56,6 +56,7 @@ class FooterSettingInfolist
                             ->schema([
                                 ImageEntry::make('logo')
                                     ->label('Configured Logo Asset')
+                                    ->disk('public')
                                     ->square() // Crisp sharp edge look instead of circular bounds
                                     ->width('100%')
                                     ->height(120)

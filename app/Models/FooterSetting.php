@@ -34,11 +34,12 @@ class FooterSetting extends Model
     {
         return $this->hasOne(FooterContactInfo::class);
     }
+    protected $appends = ['image_url'];
 
     public function getImageUrlAttribute(): ?string
     {
-        return $this->image
-            ? Storage::disk('public')->url($this->image)
+        return $this->logo
+            ? Storage::disk('public')->url($this->logo)
             : null;
     }
 }

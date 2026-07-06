@@ -169,8 +169,15 @@ class ProductForm
                                 ->multiple()
                                 ->searchable()
                                 ->relationship('attributeValues', 'value')
-                                ->options(
-                                    AttributeValue::with('attribute')
+                                ->options(function (Get $get) {
+                                    $attributeIds = $get('../../attributes') ?? [];
+
+                                    if (empty($attributeIds)) {
+                                        return [];
+                                    }
+
+                                    return AttributeValue::with('attribute')
+                                        ->whereIn('attribute_id', $attributeIds)
                                         ->join('attributes', 'attribute_values.attribute_id', '=', 'attributes.id')
                                         ->orderBy('attributes.name')
                                         ->orderBy('attribute_values.value')
@@ -178,10 +185,18 @@ class ProductForm
                                         ->get()
                                         ->mapWithKeys(fn($value) => [
                                             $value->id => "{$value->attribute->name} : {$value->value}",
-                                        ])
-                                )
-                                ->getSearchResultsUsing(function (string $search) {
+                                        ]);
+                                })
+                                ->getSearchResultsUsing(function (string $search, Get $get) {
+
+                                    $attributeIds = $get('../../attributes') ?? [];
+
+                                    if (empty($attributeIds)) {
+                                        return [];
+                                    }
+
                                     return AttributeValue::with('attribute')
+                                        ->whereIn('attribute_values.attribute_id', $attributeIds)
                                         ->join('attributes', 'attribute_values.attribute_id', '=', 'attributes.id')
                                         ->where(function ($query) use ($search) {
                                             $query->where('attribute_values.value', 'like', "%{$search}%")
