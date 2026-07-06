@@ -18,7 +18,7 @@ class FooterSettingsTable
         return $table
             ->defaultSort('created_at', 'desc')
             ->columns([
-                TextColumn::make('page_key')
+                TextColumn::make('company_key')
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
