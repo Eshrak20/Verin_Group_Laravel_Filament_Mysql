@@ -8,4 +8,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateAttributeValue extends CreateRecord
 {
     protected static string $resource = AttributeValueResource::class;
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('index');
+    }
 }

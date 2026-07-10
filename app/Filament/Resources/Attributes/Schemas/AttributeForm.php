@@ -12,7 +12,9 @@ class AttributeForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->required(),
+                    ->label('Attribute Name')
+                    ->required()
+                    ->unique(ignoreRecord: true),
             ]);
     }
 }

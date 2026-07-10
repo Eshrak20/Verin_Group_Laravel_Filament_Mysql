@@ -129,9 +129,10 @@ class ProductForm
 
                     Repeater::make('variants')
                         ->relationship('variants')
+                        ->defaultItems(1) // Create one variant automatically
                         ->columnSpanFull()
+                        ->cloneable()
                         ->grid(1)
-                        ->collapsed()
                         ->schema([
 
                             Grid::make(3)
@@ -225,7 +226,6 @@ class ProductForm
 
                             Section::make('Variant Media')
                                 ->collapsible()
-                                ->collapsed()
                                 ->schema([
 
                                     Repeater::make('images')
@@ -243,6 +243,7 @@ class ProductForm
 
                                     Repeater::make('videos')
                                         ->relationship('videos')
+                                        ->collapsed()
                                         ->label('Videos')
                                         ->columns(3)
                                         ->schema([

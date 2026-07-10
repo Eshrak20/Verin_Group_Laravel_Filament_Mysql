@@ -18,6 +18,7 @@ class ProductController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        // dd($request->all());
         $query = Product::query()
             ->with([
                 'category',
@@ -25,6 +26,10 @@ class ProductController extends Controller
                 'brand',
                 'variants.images',
                 'variants.videos',
+                'attributes',
+                'attributes' => function ($query) {
+                    $query->with('values');
+                },
             ]);
 
         // Featured
@@ -64,10 +69,52 @@ class ProductController extends Controller
                 $query->where('stock', 0);
             }
         }
+        // Dynamic Attribute Filters
+        if ($request->filled('attributes')) {
+
+            foreach ($request->attributes as $attributeName => $values) {
+
+                $values = is_array($values)
+                    ? $values
+                    : explode(',', $values);
+
+                $values = array_map('trim', $values);
+
+                $query->whereHas('variants', function ($variantQuery) use ($attributeName, $values) {
+
+                    $variantQuery->whereHas('attributeValues', function ($valueQuery) use ($attributeName, $values) {
+
+                        $valueQuery->whereIn('value', $values)
+                            ->whereHas('attribute', function ($attributeQuery) use ($attributeName) {
+
+                                $attributeQuery->where('name', $attributeName);
+                            });
+                    });
+                });
+            }
+        }
 
         // Random Order
         $query->inRandomOrder();
+        if ($request->filled('attributes')) {
 
+            foreach ($request->input('attributes') as $attributeName => $values) {
+
+                $values = is_array($values)
+                    ? $values
+                    : explode(',', $values);
+
+                $query->whereHas('variants.attributeValues', function ($q) use ($attributeName, $values) {
+
+                    $q->whereIn('value', $values)
+                        ->whereHas('attribute', function ($q) use ($attributeName) {
+                            $q->where('name', $attributeName);
+                        });
+                });
+            }
+        }
+
+        // dd($query->toSql(), $query->getBindings());
         $products = $this->scopeFilterSortPaginate(
             $query,
             $request,

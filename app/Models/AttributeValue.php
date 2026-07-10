@@ -23,4 +23,11 @@ class AttributeValue extends Model
             'product_variant_attribute_value'
         );
     }
+    public function products()
+    {
+        return $this->belongsToMany(
+            Product::class,
+            'product_attribute_values'
+        );
+    }
 }

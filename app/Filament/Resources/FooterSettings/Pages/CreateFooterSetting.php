@@ -13,4 +13,8 @@ class CreateFooterSetting extends CreateRecord
     {
         return 'full';
     }
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('index');
+    }
 }

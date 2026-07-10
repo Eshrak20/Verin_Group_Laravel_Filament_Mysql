@@ -8,4 +8,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateClientReview extends CreateRecord
 {
     protected static string $resource = ClientReviewResource::class;
+    protected function getRedirectUrl(): string
+    {
+        return static::getResource()::getUrl('index');
+    }
 }
