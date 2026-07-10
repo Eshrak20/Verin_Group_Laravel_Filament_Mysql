@@ -132,6 +132,26 @@ class ProductForm
                         ->defaultItems(1) // Create one variant automatically
                         ->columnSpanFull()
                         ->cloneable()
+                        ->cloneAction(
+                            fn($action) => $action->after(function ($arguments, $livewire) {
+
+                                $variants = data_get($livewire, 'data.variants', []);
+
+                                $lastIndex = array_key_last($variants);
+
+                                if ($lastIndex === null) {
+                                    return;
+                                }
+
+                                $sku = $variants[$lastIndex]['sku'] ?? null;
+
+                                if ($sku) {
+                                    $variants[$lastIndex]['sku'] = SkuGenerator::generateCloneSku($sku);
+
+                                    data_set($livewire, 'data.variants', $variants);
+                                }
+                            })
+                        )
                         ->grid(1)
                         ->schema([
 

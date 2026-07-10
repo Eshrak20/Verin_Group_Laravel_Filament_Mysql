@@ -94,4 +94,31 @@ class SkuGenerator
 
         return substr($text, 0, $length) ?: $default;
     }
+    public static function generateCloneSku(string $sku): string
+    {
+        // Match the trailing numeric portion
+        if (! preg_match('/^(.*?)-(\d+)$/', $sku, $matches)) {
+            return $sku;
+        }
+
+        $prefix = $matches[1];
+        $number = (int) $matches[2];
+        $length = strlen($matches[2]);
+
+        do {
+
+            $number++;
+
+            $newSku = $prefix . '-' . str_pad(
+                (string) $number,
+                $length,
+                '0',
+                STR_PAD_LEFT
+            );
+        } while (
+            ProductVariant::where('sku', $newSku)->exists()
+        );
+
+        return $newSku;
+    }
 }
