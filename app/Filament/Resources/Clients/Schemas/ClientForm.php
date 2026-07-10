@@ -21,6 +21,7 @@ class ClientForm
                     ->disk('public')
                     ->directory('clients'),
                 Toggle::make('is_active')
+                    ->default(true)
                     ->required(),
                 TextInput::make('sort_order')
                     ->required()

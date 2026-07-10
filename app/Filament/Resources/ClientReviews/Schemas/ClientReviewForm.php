@@ -36,6 +36,7 @@ class ClientReviewForm
                 TextInput::make('item')
                     ->required(),
                 Toggle::make('is_active')
+                    ->default(true)
                     ->required(),
                 TextInput::make('sort_order')
                     ->required()

@@ -13,6 +13,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
+
 class FooterSettingForm
 {
     public static function configure(Schema $schema): Schema
@@ -91,7 +92,8 @@ class FooterSettingForm
                                                 TextInput::make('title')->required()->extraAttributes(['style' => 'border-radius: 0px;']),
                                                 TextInput::make('url')->url()->required()->extraAttributes(['style' => 'border-radius: 0px;']),
                                                 TextInput::make('sort_order')->numeric()->default(0)->extraAttributes(['style' => 'border-radius: 0px;']),
-                                                Toggle::make('open_new_tab')->inline(false),
+
+                                                Toggle::make('open_new_tab')->inline(false)->default(true),
                                             ])->itemLabel(fn($state) => $state['title'] ?? 'New Link'),
                                     ]),
 

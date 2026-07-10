@@ -43,6 +43,7 @@ class CategoryForm
                         'style' => 'min-height: 100px;',
                     ]),
                 Toggle::make('status')
+                    ->default(true)
                     ->required(),
             ]);
     }
