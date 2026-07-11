@@ -2,10 +2,11 @@
 
 namespace App\Filament\Resources\AttributeValues\Schemas;
 
-use App\Models\AttributeValue;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TagsInput;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Utilities\Set;
+use App\Models\Attribute;
 
 class AttributeValueForm
 {
@@ -19,31 +20,36 @@ class AttributeValueForm
                     ->relationship('attribute', 'name')
                     ->searchable()
                     ->preload()
-                    ->required(),
-
-                TextInput::make('value')
-                    ->label('Value (e.g. Red, XL, Blue)')
+                    ->live()
                     ->required()
-                    ->maxLength(255)
-                    ->rules([
-                        function ($get, $record) {
-                            return function (string $attribute, $value, \Closure $fail) use ($get, $record) {
+                    ->afterStateUpdated(function ($state, Set $set) {
 
-                                $exists = AttributeValue::query()
-                                    ->where('attribute_id', $get('attribute_id'))
-                                    ->where('value', $value)
-                                    ->when(
-                                        $record,
-                                        fn ($query) => $query->whereKeyNot($record->id)
-                                    )
-                                    ->exists();
+                        if (! $state) {
+                            $set('values', []);
+                            return;
+                        }
 
-                                if ($exists) {
-                                    $fail('This value already exists for the selected attribute.');
-                                }
-                            };
-                        },
-                    ]),
+                        $values = Attribute::find($state)
+                            ?->values()
+                            ->pluck('value')
+                            ->toArray() ?? [];
+
+                        $set('values', $values);
+                    }),
+
+                TagsInput::make('values')
+                    ->afterStateHydrated(function ($component, $record) {
+                        if (! $record) {
+                            return;
+                        }
+
+                        $component->state(
+                            $record->attribute
+                                ->values()
+                                ->pluck('value')
+                                ->toArray()
+                        );
+                    }),
             ]);
     }
 }
