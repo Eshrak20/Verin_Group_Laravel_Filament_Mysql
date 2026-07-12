@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Attributes\Schemas;
 
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -12,9 +13,22 @@ class AttributeForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->label('Attribute Name')
+                    ->required(),
+                TagsInput::make('values')
                     ->required()
-                    ->unique(ignoreRecord: true),
+                    ->label('Values')
+                    ->placeholder('Type a value and press Enter')
+                    ->afterStateHydrated(function ($component, $record) {
+                        if (! $record) {
+                            return;
+                        }
+
+                        $component->state(
+                            $record->values()
+                                ->pluck('value')
+                                ->toArray()
+                        );
+                    })
             ]);
     }
 }

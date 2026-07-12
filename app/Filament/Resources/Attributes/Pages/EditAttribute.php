@@ -20,4 +20,24 @@ class EditAttribute extends EditRecord
     {
         return static::getResource()::getUrl('index');
     }
+    protected function afterSave(): void
+    {
+        $values = collect($this->data['values'] ?? [])
+            ->map(fn($value) => trim($value))
+            ->filter()
+            ->unique()
+            ->values();
+
+        // Delete removed values
+        $this->record->values()
+            ->whereNotIn('value', $values)
+            ->delete();
+
+        // Create missing values
+        foreach ($values as $value) {
+            $this->record->values()->firstOrCreate([
+                'value' => $value,
+            ]);
+        }
+    }
 }

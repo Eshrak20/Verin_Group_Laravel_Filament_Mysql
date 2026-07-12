@@ -13,15 +13,23 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class AttributeResource extends Resource
 {
     protected static ?string $model = Attribute::class;
-    protected static ?int $navigationSort = 1;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?int $navigationSort = 2;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAdjustmentsHorizontal;
+
+    protected static ?string $navigationLabel = 'Attributes';
+
+    protected static ?string $modelLabel = 'Attribute';
+
+    protected static ?string $pluralModelLabel = 'Attributes';
+
+
     protected static string|\UnitEnum|null $navigationGroup = 'Product Management';
-
 
     public static function form(Schema $schema): Schema
     {
@@ -35,9 +43,14 @@ class AttributeResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->with('values')
+            ->withCount('values');
     }
 
     public static function getPages(): array
