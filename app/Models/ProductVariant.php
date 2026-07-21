@@ -14,13 +14,11 @@ class ProductVariant extends Model
         'status',
     ];
 
-    // ✅ Variant images (1-to-many)
     public function images()
     {
         return $this->hasMany(ProductVariantImage::class);
     }
 
-    // ✅ MANY-TO-MANY with attribute values
     public function attributeValues()
     {
         return $this->belongsToMany(
@@ -29,12 +27,13 @@ class ProductVariant extends Model
         );
     }
 
-    
-
-    // optional (recommended)
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class);
     }
     public function videos()
     {
