@@ -13,9 +13,6 @@ class ProductController extends Controller
     // Inject the reusable filtering and pagination engine
     use FilterAndPaginate;
 
-    /**
-     * Display a listing of products with dynamic filters.
-     */
     public function index(Request $request): JsonResponse
     {
         // dd($request->all());
@@ -118,7 +115,7 @@ class ProductController extends Controller
         $products = $this->scopeFilterSortPaginate(
             $query,
             $request,
-            ['name', 'short_description']
+            ['name','slug','short_description']
         );
 
         return response()->json([

@@ -18,6 +18,18 @@ class Product extends Model
         'is_featured',
         'status',
     ];
+    protected $casts = [
+        'category_id'     => 'integer',
+        'sub_category_id' => 'integer',
+        'brand_id'        => 'integer',
+
+        'is_featured'     => 'boolean',
+        'status'          => 'boolean',
+
+        'created_at'      => 'datetime',
+        'updated_at'      => 'datetime',
+    ];
+
 
     public function category()
     {

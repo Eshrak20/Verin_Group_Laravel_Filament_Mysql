@@ -14,12 +14,28 @@ trait FilterAndPaginate
     protected function scopeFilterSortPaginate(Builder $query, Request $request, array $searchableFields = ['name']): LengthAwarePaginator
     {
         // 1. 🔍 Search Filter (e.g., ?search=phone)
+        // if ($request->filled('search')) {
+        //     $searchTerm = $request->input('search');
+        //     $query->where(function (Builder $subQuery) use ($searchableFields, $searchTerm) {
+        //         foreach ($searchableFields as $field) {
+        //             $subQuery->orWhere($field, 'LIKE', "%{$searchTerm}%");
+        //         }
+        //     });
+        // }
         if ($request->filled('search')) {
-            $searchTerm = $request->input('search');
+            $searchTerm = trim($request->input('search'));
+
             $query->where(function (Builder $subQuery) use ($searchableFields, $searchTerm) {
+
+                // Search product fields
                 foreach ($searchableFields as $field) {
-                    $subQuery->orWhere($field, 'LIKE', "%{$searchTerm}%");
+                    $subQuery->orWhere($field, 'like', "%{$searchTerm}%");
                 }
+
+                // Search variant SKU
+                $subQuery->orWhereHas('variants', function (Builder $variantQuery) use ($searchTerm) {
+                    $variantQuery->where('sku', 'like', "%{$searchTerm}%");
+                });
             });
         }
 
