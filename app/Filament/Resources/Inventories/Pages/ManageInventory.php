@@ -321,8 +321,14 @@ class ManageInventory extends Page
                         $quantity = $data['quantity'];
 
 
-                        // Source branch
+                        /*
+        |--------------------------------------------------------------------------
+        | Source Inventory
+        |--------------------------------------------------------------------------
+        */
+
                         $sourceBefore = $this->record->stock;
+
 
                         $this->record->decrement(
                             'stock',
@@ -334,29 +340,12 @@ class ManageInventory extends Page
 
 
 
-                        InventoryTransaction::create([
+                        /*
+        |--------------------------------------------------------------------------
+        | Destination Inventory
+        |--------------------------------------------------------------------------
+        */
 
-                            'inventory_id' => $this->record->id,
-
-                            'user_id' => auth()->id(),
-
-                            'type' => 'transfer_out',
-
-                            'quantity' => $quantity,
-
-                            'before_stock' => $sourceBefore,
-
-                            'after_stock' => $this->record->stock,
-
-                            'remarks' => $data['remarks'],
-
-                        ]);
-
-
-
-                        // Destination branch
-
-                        // Destination branch
 
                         $destination = Inventory::firstOrCreate([
 
@@ -371,7 +360,9 @@ class ManageInventory extends Page
                         ]);
 
 
+
                         $destinationBefore = $destination->stock;
+
 
 
                         $destination->increment(
@@ -382,6 +373,13 @@ class ManageInventory extends Page
 
                         $destination->refresh();
 
+
+
+                        /*
+        |--------------------------------------------------------------------------
+        | Transfer Out History
+        |--------------------------------------------------------------------------
+        */
 
 
                         InventoryTransaction::create([
@@ -401,6 +399,37 @@ class ManageInventory extends Page
                             'before_stock' => $sourceBefore,
 
                             'after_stock' => $this->record->stock,
+
+                            'remarks' => $data['remarks'],
+
+                        ]);
+
+
+
+                        /*
+        |--------------------------------------------------------------------------
+        | Transfer In History
+        |--------------------------------------------------------------------------
+        */
+
+
+                        InventoryTransaction::create([
+
+                            'inventory_id' => $destination->id,
+
+                            'from_inventory_id' => $this->record->id,
+
+                            'to_inventory_id' => $destination->id,
+
+                            'user_id' => auth()->id(),
+
+                            'type' => 'transfer_in',
+
+                            'quantity' => $quantity,
+
+                            'before_stock' => $destinationBefore,
+
+                            'after_stock' => $destination->stock,
 
                             'remarks' => $data['remarks'],
 
