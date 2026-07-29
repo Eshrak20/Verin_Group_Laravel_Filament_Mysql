@@ -85,6 +85,12 @@ class ProductForm
                                 ->afterStateUpdated(fn(Get $get, Set $set) => self::updateAllVariantSkus($get, $set)),
 
                         ]),
+                    Select::make('delivery_charge_id')
+                        ->label('Delivery Charge')
+                        ->relationship('deliveryCharge', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->required(),
 
                     Select::make('attributes')
                         ->label('Product Options (Color, Size etc.)')

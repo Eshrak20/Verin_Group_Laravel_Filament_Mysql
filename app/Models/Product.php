@@ -50,6 +50,10 @@ class Product extends Model
     {
         return $this->hasMany(ProductVariant::class);
     }
+    public function deliveryCharge()
+    {
+        return $this->belongsTo(DeliveryCharge::class);
+    }
 
     // ✅ ADD THIS (MISSING PART)
     public function attributes()
