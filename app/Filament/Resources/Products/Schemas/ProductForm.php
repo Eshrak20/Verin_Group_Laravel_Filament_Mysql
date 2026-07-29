@@ -273,50 +273,50 @@ class ProductForm
                                         ->label('Videos')
                                         ->columns(3)
                                         ->schema([
+                                            // TODO: In next phase a proper video file uploading will be included for now video uploading but not deleting so we have to fix that 
+                                            // FileUpload::make('video_upload_action')
+                                            //     ->label('Upload Video')
+                                            //     ->disk('public')
+                                            //     ->acceptedFileTypes([
+                                            //         'video/mp4',
+                                            //         'video/webm',
+                                            //         'video/ogg',
+                                            //         'video/quicktime',
+                                            //     ])
+                                            //     ->live()
+                                            //     ->dehydrated(false)
+                                            //     ->columnSpan(2)
+                                            //     ->afterStateUpdated(function ($state, Set $set) {
 
-                                            FileUpload::make('video_upload_action')
-                                                ->label('Upload Video')
-                                                ->disk('public')
-                                                ->acceptedFileTypes([
-                                                    'video/mp4',
-                                                    'video/webm',
-                                                    'video/ogg',
-                                                    'video/quicktime',
-                                                ])
-                                                ->live()
-                                                ->dehydrated(false)
-                                                ->columnSpan(2)
-                                                ->afterStateUpdated(function ($state, Set $set) {
+                                            //         $file = is_array($state)
+                                            //             ? reset($state)
+                                            //             : $state;
 
-                                                    $file = is_array($state)
-                                                        ? reset($state)
-                                                        : $state;
+                                            //         if (! $file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                                            //             return;
+                                            //         }
 
-                                                    if (! $file instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                                                        return;
-                                                    }
+                                            //         $cloudinary = new \Cloudinary\Cloudinary([
+                                            //             'cloud' => [
+                                            //                 'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                                            //                 'api_key' => env('CLOUDINARY_API_KEY'),
+                                            //                 'api_secret' => env('CLOUDINARY_API_SECRET'),
+                                            //             ],
+                                            //         ]);
 
-                                                    $cloudinary = new \Cloudinary\Cloudinary([
-                                                        'cloud' => [
-                                                            'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                                                            'api_key' => env('CLOUDINARY_API_KEY'),
-                                                            'api_secret' => env('CLOUDINARY_API_SECRET'),
-                                                        ],
-                                                    ]);
+                                            //         $upload = $cloudinary
+                                            //             ->uploadApi()
+                                            //             ->upload(
+                                            //                 $file->getRealPath(),
+                                            //                 [
+                                            //                     'resource_type' => 'video',
+                                            //                     'folder' => 'product-videos',
+                                            //                 ]
+                                            //             );
 
-                                                    $upload = $cloudinary
-                                                        ->uploadApi()
-                                                        ->upload(
-                                                            $file->getRealPath(),
-                                                            [
-                                                                'resource_type' => 'video',
-                                                                'folder' => 'product-videos',
-                                                            ]
-                                                        );
-
-                                                    $set('video_url', $upload['secure_url']);
-                                                    $set('video_upload_action', null);
-                                                }),
+                                            //         $set('video_url', $upload['secure_url']);
+                                            //         $set('video_upload_action', null);
+                                            //     }),
 
                                             TextInput::make('video_url')
                                                 ->label('Video URL')
