@@ -27,16 +27,35 @@ trait FilterAndPaginate
 
             $query->where(function (Builder $subQuery) use ($searchableFields, $searchTerm) {
 
-                // Search product fields
                 foreach ($searchableFields as $field) {
                     $subQuery->orWhere($field, 'like', "%{$searchTerm}%");
                 }
 
-                // Search variant SKU
                 $subQuery->orWhereHas('variants', function (Builder $variantQuery) use ($searchTerm) {
                     $variantQuery->where('sku', 'like', "%{$searchTerm}%");
                 });
             });
+
+            // Search priority
+            $query->orderByRaw("
+        CASE
+            WHEN name LIKE ? THEN 1
+            WHEN EXISTS (
+                SELECT 1
+                FROM product_variants
+                WHERE product_variants.product_id = products.id
+                AND product_variants.sku LIKE ?
+            ) THEN 2
+            WHEN slug LIKE ? THEN 3
+            WHEN short_description LIKE ? THEN 4
+            ELSE 5
+        END
+    ", [
+                "%{$searchTerm}%",
+                "%{$searchTerm}%",
+                "%{$searchTerm}%",
+                "%{$searchTerm}%"
+            ]);
         }
 
         // 2. 🎛️ Exact Matches Filtering (e.g., ?category_id=2&sub_category_id=5&brand_id=1)
