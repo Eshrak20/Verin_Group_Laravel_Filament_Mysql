@@ -23,8 +23,10 @@ trait FilterAndPaginate
         //     });
         // }
         if ($request->filled('search')) {
+
             $searchTerm = trim($request->input('search'));
 
+            // Search
             $query->where(function (Builder $subQuery) use ($searchableFields, $searchTerm) {
 
                 foreach ($searchableFields as $field) {
@@ -36,24 +38,63 @@ trait FilterAndPaginate
                 });
             });
 
-            // Search priority
+            // Relevance sorting
             $query->orderByRaw("
         CASE
-            WHEN name LIKE ? THEN 1
+            -- Product Name
+            WHEN LOWER(name) = LOWER(?) THEN 100
+            WHEN LOWER(name) LIKE LOWER(?) THEN 90
+            WHEN LOWER(name) LIKE LOWER(?) THEN 80
+
+            -- SKU
             WHEN EXISTS (
                 SELECT 1
                 FROM product_variants
                 WHERE product_variants.product_id = products.id
-                AND product_variants.sku LIKE ?
-            ) THEN 2
-            WHEN slug LIKE ? THEN 3
-            WHEN short_description LIKE ? THEN 4
-            ELSE 5
-        END
+                AND LOWER(product_variants.sku) = LOWER(?)
+            ) THEN 70
+
+            WHEN EXISTS (
+                SELECT 1
+                FROM product_variants
+                WHERE product_variants.product_id = products.id
+                AND LOWER(product_variants.sku) LIKE LOWER(?)
+            ) THEN 60
+
+            WHEN EXISTS (
+                SELECT 1
+                FROM product_variants
+                WHERE product_variants.product_id = products.id
+                AND LOWER(product_variants.sku) LIKE LOWER(?)
+            ) THEN 50
+
+            -- Slug
+            WHEN LOWER(slug) = LOWER(?) THEN 40
+            WHEN LOWER(slug) LIKE LOWER(?) THEN 30
+            WHEN LOWER(slug) LIKE LOWER(?) THEN 20
+
+            -- Short Description
+            WHEN LOWER(short_description) LIKE LOWER(?) THEN 10
+
+            ELSE 0
+        END DESC
     ", [
+                // Name
+                $searchTerm,
+                "{$searchTerm}%",
                 "%{$searchTerm}%",
+
+                // SKU
+                $searchTerm,
+                "{$searchTerm}%",
                 "%{$searchTerm}%",
+
+                // Slug
+                $searchTerm,
+                "{$searchTerm}%",
                 "%{$searchTerm}%",
+
+                // Description
                 "%{$searchTerm}%"
             ]);
         }
@@ -67,25 +108,52 @@ trait FilterAndPaginate
         }
 
         // 3. ↕️ Price & Alphabetical Sorting (e.g., ?sort=price_asc, ?sort=name_desc)
-        if ($request->filled('sort')) {
-            switch ($request->input('sort')) {
-                case 'price_asc':
-                    $query->orderBy('price', 'asc');
-                    break;
-                case 'price_desc':
-                    $query->orderBy('price', 'desc');
-                    break;
-                case 'name_desc':
-                    $query->orderBy('name', 'desc');
-                    break;
-                case 'name_asc':
-                default:
-                    $query->orderBy('name', 'asc');
-                    break;
+        // if ($request->filled('sort')) {
+        //     switch ($request->input('sort')) {
+        //         case 'price_asc':
+        //             $query->orderBy('price', 'asc');
+        //             break;
+        //         case 'price_desc':
+        //             $query->orderBy('price', 'desc');
+        //             break;
+        //         case 'name_desc':
+        //             $query->orderBy('name', 'desc');
+        //             break;
+        //         case 'name_asc':
+        //         default:
+        //             $query->orderBy('name', 'asc');
+        //             break;
+        //     }
+        // } else {
+        //     // Default Sorting: A-Z
+        //     $query->orderBy('name', 'asc');
+        // }
+        if (!$request->filled('search')) {
+
+            if ($request->filled('sort')) {
+
+                switch ($request->input('sort')) {
+
+                    case 'price_asc':
+                        $query->orderBy('price', 'asc');
+                        break;
+
+                    case 'price_desc':
+                        $query->orderBy('price', 'desc');
+                        break;
+
+                    case 'name_desc':
+                        $query->orderBy('name', 'desc');
+                        break;
+
+                    case 'name_asc':
+                    default:
+                        $query->orderBy('name', 'asc');
+                        break;
+                }
+            } else {
+                $query->orderBy('name', 'asc');
             }
-        } else {
-            // Default Sorting: A-Z
-            $query->orderBy('name', 'asc');
         }
 
         // 4. 📄 Dynamic Pagination (e.g., ?per_page=15)
