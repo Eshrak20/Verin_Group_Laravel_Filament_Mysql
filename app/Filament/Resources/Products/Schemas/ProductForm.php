@@ -268,7 +268,7 @@ class ProductForm
                                         ]),
 
                                     Repeater::make('videos')
-                                        ->relationship('videos')
+                                        ->relationship()
                                         ->collapsed()
                                         ->label('Videos')
                                         ->columns(3)

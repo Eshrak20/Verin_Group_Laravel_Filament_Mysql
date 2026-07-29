@@ -20,4 +20,5 @@ class EditProduct extends EditRecord
     {
         return static::getResource()::getUrl('index');
     }
+    
 }
