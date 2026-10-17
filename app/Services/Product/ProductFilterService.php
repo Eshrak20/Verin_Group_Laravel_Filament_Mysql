@@ -10,8 +10,7 @@ class ProductFilterService
      * Generate filters from the current category/context.
      *
      * Attribute selections are intentionally NOT applied.
-     *
-     * Counts represent unique products, not variants.
+     * Options contain unique attribute values without counts.
      */
     public function getDynamicFilters(Builder $query): array
     {
@@ -39,34 +38,20 @@ class ProductFilterService
                         $filters[$attributeId] = [
                             'id' => $attributeId,
                             'name' => $attribute->name,
-                            'type' => 'checkbox',
                             'options' => [],
                         ];
                     }
 
-                    if (!isset($filters[$attributeId]['options'][$value])) {
-                        $filters[$attributeId]['options'][$value] = [
-                            'value' => $value,
-                            'product_ids' => [],
-                        ];
-                    }
-
-                    $filters[$attributeId]['options'][$value]['product_ids'][] = $product->id;
+                    $filters[$attributeId]['options'][$value] = $value;
                 }
             }
         }
 
         foreach ($filters as &$filter) {
-            foreach ($filter['options'] as &$option) {
-                $option['count'] = count(
-                    array_unique($option['product_ids'])
-                );
-
-                unset($option['product_ids']);
-            }
-
             $filter['options'] = array_values($filter['options']);
         }
+
+        unset($filter);
 
         return array_values($filters);
     }

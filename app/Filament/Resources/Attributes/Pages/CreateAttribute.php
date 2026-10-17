@@ -5,7 +5,6 @@ namespace App\Filament\Resources\Attributes\Pages;
 use App\Filament\Resources\Attributes\AttributeResource;
 use App\Models\Attribute;
 use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Validation\ValidationException;
 
 class CreateAttribute extends CreateRecord
 {
