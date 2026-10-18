@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\CatalogController;
@@ -31,4 +32,35 @@ Route::prefix('v1')->group(function () {
 
     Route::get('/blogs', [BlogController::class, 'index']);
     Route::get('/blogs/{slug}', [BlogController::class, 'show']);
+
+
+    Route::prefix('auth')->group(function () {
+        Route::post('/signup', [AuthController::class, 'signup']);
+
+        Route::post('/login', [AuthController::class, 'login'])
+            ->middleware('throttle:auth-sensitive');
+
+        Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
+            ->middleware('throttle:auth-sensitive');
+
+        Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+
+        Route::post('/send-otp', [AuthController::class, 'sendOtp'])
+            ->middleware('throttle:auth-sensitive');
+
+        Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])
+            ->middleware('throttle:auth-sensitive');
+
+        Route::post('/resend-otp', [AuthController::class, 'resendOtp'])
+            ->middleware('throttle:auth-sensitive');
+
+        Route::post('/verify-email', [AuthController::class, 'verifyEmail'])
+            ->middleware('throttle:auth-sensitive');
+
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::get('/myprofile', [AuthController::class, 'myprofile']);
+            Route::post('/logout', [AuthController::class, 'logout']);
+            Route::post('/change-password', [AuthController::class, 'changePassword']);
+        });
+    });
 });

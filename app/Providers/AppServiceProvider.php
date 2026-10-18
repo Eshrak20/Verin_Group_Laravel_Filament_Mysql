@@ -9,6 +9,11 @@ use Illuminate\Filesystem\FilesystemAdapter;
 use League\Flysystem\Filesystem;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Api\Upload\UploadApi;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Cache\RateLimiting\Limit;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,12 +24,22 @@ class AppServiceProvider extends ServiceProvider
     {
         //
     }
-
     /**
      * Bootstrap any application services.
      */
     public function boot(): void
     {
+
+
+        RateLimiter::for('auth-sensitive', function (Request $request) {
+            $email = $request->string('email')->lower()->toString();
+            $limiterKey = $email !== ''
+                ? Str::transliterate($email) . '|' . $request->ip()
+                : $request->ip();
+
+            return Limit::perMinute(5)->by($request->path() . '|' . $limiterKey);
+        });
+
         // Register your VariantImage model observer
         ProductVariantImage::observe(\App\Observers\VariantImageObserver::class);
 
@@ -54,7 +69,7 @@ class AppServiceProvider extends ServiceProvider
                 public function url(string $path): string
                 {
                     $cloudName = config('filesystems.disks.cloudinary.cloud_name');
-                    
+
                     $filename = pathinfo($path, PATHINFO_FILENAME);
                     $extension = pathinfo($path, PATHINFO_EXTENSION) ?: 'png';
 
@@ -108,7 +123,7 @@ class AppServiceProvider extends ServiceProvider
                 public function deleteDirectory(string $path): void {}
                 public function createDirectory(string $path, \League\Flysystem\Config $config): void {}
                 public function setVisibility(string $path, string $visibility): void {}
-                
+
                 public function visibility(string $path): \League\Flysystem\FileAttributes
                 {
                     return new \League\Flysystem\FileAttributes($path);
