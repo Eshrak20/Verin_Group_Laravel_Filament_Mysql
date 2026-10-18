@@ -234,7 +234,7 @@ class OrderService
     private function generateOrderNumber(): string
     {
         do {
-            $orderNumber = 'VRN-' . strtoupper(Str::random(10));
+            $orderNumber = 'VRN-' . strtoupper(Str::random(7));
         } while (
             Order::where('order_number', $orderNumber)->exists()
         );
