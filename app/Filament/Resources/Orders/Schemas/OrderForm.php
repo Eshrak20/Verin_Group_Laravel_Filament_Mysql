@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Orders\Schemas;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -25,6 +26,7 @@ class OrderForm
                             'delivered' => 'Delivered',
                             'cancelled' => 'Cancelled',
                         ])
+                        ->default('pending')
                         ->required(),
 
                     Select::make('payment_status')
@@ -35,9 +37,10 @@ class OrderForm
                             'paid' => 'Paid',
                             'failed' => 'Failed',
                         ])
+                        ->default('unpaid')
                         ->required(),
-
                 ]),
+
             Section::make('Steadfast Courier')
                 ->description('Manage the courier tracking number for this order.')
                 ->schema([
@@ -51,66 +54,92 @@ class OrderForm
                         )
                         ->columnSpanFull(),
                 ]),
+
             Section::make('Customer Information')
                 ->columns(2)
                 ->schema([
-                    \Filament\Forms\Components\TextInput::make('customer_name')
-                        ->disabled()
-                        ->dehydrated(false),
+                    TextInput::make('customer_name')
+                        ->label('Customer Name')
+                        ->required()
+                        ->maxLength(255),
 
-                    \Filament\Forms\Components\TextInput::make('phone')
-                        ->disabled()
-                        ->dehydrated(false),
+                    TextInput::make('phone')
+                        ->label('Phone')
+                        ->required()
+                        ->tel()
+                        ->maxLength(30),
 
-                    \Filament\Forms\Components\TextInput::make('email')
-                        ->disabled()
-                        ->dehydrated(false),
+                    TextInput::make('email')
+                        ->label('Email')
+                        ->email()
+                        ->nullable()
+                        ->maxLength(255),
 
-                    \Filament\Forms\Components\TextInput::make('payment_method')
-                        ->disabled()
-                        ->dehydrated(false),
+                    Select::make('payment_method')
+                        ->label('Payment Method')
+                        ->options([
+                            'cod' => 'Cash on Delivery',
+                            'online' => 'Online Payment',
+                        ])
+                        ->required(),
 
-                    \Filament\Forms\Components\Textarea::make('delivery_address')
-                        ->disabled()
-                        ->dehydrated(false)
+                    Textarea::make('delivery_address')
+                        ->label('Delivery Address')
+                        ->required()
+                        ->rows(3)
                         ->columnSpanFull(),
 
-                    \Filament\Forms\Components\TextInput::make('district')
-                        ->disabled()
-                        ->dehydrated(false),
+                    TextInput::make('district')
+                        ->label('District')
+                        ->required()
+                        ->maxLength(255),
 
-                    \Filament\Forms\Components\TextInput::make('area')
-                        ->disabled()
-                        ->dehydrated(false),
+                    TextInput::make('area')
+                        ->label('Area')
+                        ->nullable()
+                        ->maxLength(255),
 
-                    \Filament\Forms\Components\Textarea::make('customer_note')
-                        ->disabled()
-                        ->dehydrated(false)
+                    Textarea::make('customer_note')
+                        ->label('Customer Note')
+                        ->nullable()
+                        ->rows(3)
                         ->columnSpanFull(),
                 ]),
 
             Section::make('Order Summary')
                 ->columns(2)
                 ->schema([
-                    \Filament\Forms\Components\TextInput::make('subtotal')
+                    TextInput::make('subtotal')
+                        ->label('Subtotal')
                         ->prefix('৳')
-                        ->disabled()
-                        ->dehydrated(false),
+                        ->numeric()
+                        ->required()
+                        ->default(0)
+                        ->minValue(0),
 
-                    \Filament\Forms\Components\TextInput::make('delivery_charge')
+                    TextInput::make('delivery_charge')
+                        ->label('Delivery Charge')
                         ->prefix('৳')
-                        ->disabled()
-                        ->dehydrated(false),
+                        ->numeric()
+                        ->required()
+                        ->default(0)
+                        ->minValue(0),
 
-                    \Filament\Forms\Components\TextInput::make('discount_amount')
+                    TextInput::make('discount_amount')
+                        ->label('Discount Amount')
                         ->prefix('৳')
-                        ->disabled()
-                        ->dehydrated(false),
+                        ->numeric()
+                        ->required()
+                        ->default(0)
+                        ->minValue(0),
 
-                    \Filament\Forms\Components\TextInput::make('total_amount')
+                    TextInput::make('total_amount')
+                        ->label('Total Amount')
                         ->prefix('৳')
-                        ->disabled()
-                        ->dehydrated(false),
+                        ->numeric()
+                        ->required()
+                        ->default(0)
+                        ->minValue(0),
                 ]),
         ]);
     }
