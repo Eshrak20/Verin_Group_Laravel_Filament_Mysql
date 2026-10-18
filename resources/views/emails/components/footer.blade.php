@@ -12,7 +12,7 @@
 
             <p style="margin: 0 0 16px; color: #6b7280; font-size: 13px;">
                 This is an automated notification that a new order has
-                been placed on Verin Decor.
+                been placed on Verin E-commerce Site.
             </p>
 
             <p style="margin: 0 0 16px;">

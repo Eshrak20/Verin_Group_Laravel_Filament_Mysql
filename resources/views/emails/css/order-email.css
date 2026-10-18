@@ -1,8 +1,9 @@
+/* Base */
 body {
     margin: 0;
     padding: 0;
-    background-color: #f4f5f7;
-    color: #252525;
+    background-color: #F9F8F6;
+    color: #0C0C0C;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
     line-height: 1.6;
@@ -10,54 +11,91 @@ body {
 
 .email-container {
     width: 100%;
-    background-color: #f4f5f7;
+    background-color: #F9F8F6;
     padding: 24px 10px;
+    box-sizing: border-box;
 }
 
 .email-content {
     max-width: 680px;
     margin: 0 auto;
     padding: 28px;
-    background-color: #ffffff;
-    border: 1px solid #e5e7eb;
+    background-color: #FFFFFF;
+    border: 1px solid #E8E6E2;
+    box-sizing: border-box;
 }
 
+/* Header */
 .email-header {
     padding: 22px;
     text-align: center;
-    background-color: #173f35;
-    color: #ffffff;
+    background-color: #F9F8F6;
+    color: #0C0C0C;
 }
 
 .brand-name {
     margin: 0;
+    color: #0C0C0C;
     font-size: 28px;
+    font-weight: 700;
     letter-spacing: 1px;
 }
 
 .header-subtitle {
     margin: 5px 0 0;
-    color: #e5eee9;
+    color: #666666;
+    font-size: 14px;
 }
 
+/* Main content */
 .main-title {
-    margin-top: 28px;
-    color: #173f35;
-    font-size: 22px;
+    margin: 0 0 20px;
+    color: #0C0C0C;
+    font-size: 24px;
+    line-height: 1.4;
+    font-weight: 700;
 }
 
 .intro-text {
     color: #555555;
 }
 
+/* Order number */
+.order-number {
+    margin: 24px 0;
+    padding: 16px;
+    background-color: #F9F8F6;
+    border: 1px solid #E8E6E2;
+    border-left: 4px solid #0C0C0C;
+}
+
+.order-number span {
+    display: block;
+    margin-bottom: 4px;
+    color: #666666;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.order-number strong {
+    display: block;
+    color: #0C0C0C;
+    font-size: 18px;
+    overflow-wrap: anywhere;
+}
+
+/* Section headings */
 .section-title {
     margin-top: 28px;
     padding-bottom: 8px;
-    color: #173f35;
-    border-bottom: 1px solid #e5e7eb;
+    color: #0C0C0C;
+    border-bottom: 1px solid #E8E6E2;
     font-size: 17px;
+    font-weight: 700;
 }
 
+/* Tables */
 .details-table,
 .products-table,
 .totals-table {
@@ -70,7 +108,7 @@ body {
 .products-table td,
 .totals-table td {
     padding: 11px 8px;
-    border-bottom: 1px solid #eeeeee;
+    border-bottom: 1px solid #E8E6E2;
     vertical-align: top;
 }
 
@@ -80,29 +118,39 @@ body {
 }
 
 .detail-value {
-    color: #222222;
+    color: #0C0C0C;
     overflow-wrap: anywhere;
 }
 
+/* Customer and payment information tables */
+table[width="100%"] td[style*="border: 1px solid"] {
+    border-color: #E8E6E2 !important;
+}
+
+/* Products */
 .products-table th {
-    background-color: #f4f7f5;
-    color: #173f35;
+    background-color: #F9F8F6;
+    color: #0C0C0C;
     font-size: 12px;
+    font-weight: 700;
+    text-align: left;
 }
 
 .products-table td {
+    color: #333333;
     font-size: 12px;
 }
 
 .products-table small,
 .regular-price {
-    color: #888888;
+    color: #777777;
 }
 
 .regular-price {
     text-decoration: line-through;
 }
 
+/* Order totals */
 .totals-table {
     margin-top: 18px;
 }
@@ -112,55 +160,87 @@ body {
 }
 
 .discount-value {
-    color: #16803c;
+    color: #333333;
 }
 
 .grand-total td {
     padding-top: 15px;
-    border-top: 2px solid #173f35;
+    border-top: 2px solid #0C0C0C;
     border-bottom: none;
-    color: #173f35;
+    color: #0C0C0C;
     font-size: 17px;
+    font-weight: 700;
 }
 
+/* Customer note */
 .customer-note {
     padding: 12px;
-    background-color: #f8faf9;
+    background-color: #F9F8F6;
+    color: #333333;
     overflow-wrap: anywhere;
 }
 
+/* Button */
 .button-wrapper {
     padding: 24px 0;
+    text-align: center;
 }
 
 .email-button {
     display: inline-block;
     padding: 12px 22px;
-    background-color: #173f35;
-    color: #ffffff !important;
+    background-color: #0C0C0C;
+    color: #FFFFFF !important;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 700;
+    border-radius: 4px;
 }
 
+/* Footer */
 .email-footer {
-    padding-top: 20px;
+    padding: 20px 12px;
     color: #777777;
-    border-top: 1px solid #e5e7eb;
+    background-color: #F9F8F6;
+    border-top: 1px solid #E8E6E2;
     font-size: 12px;
     text-align: center;
 }
 
 .footer-brand {
     margin-top: 15px;
+    color: #0C0C0C;
 }
 
+.email-footer a,
+.footer-brand a {
+    color: #0C0C0C;
+    text-decoration: underline;
+}
+
+/* Responsive */
 @media only screen and (max-width: 600px) {
+    .email-container {
+        padding: 12px 6px;
+    }
+
     .email-content {
-        padding: 15px;
+        padding: 16px;
+    }
+
+    .email-header {
+        padding: 18px 12px;
     }
 
     .brand-name {
         font-size: 23px;
+    }
+
+    .main-title {
+        font-size: 21px;
+    }
+
+    .order-number {
+        padding: 12px;
     }
 
     .products-table th,

@@ -1,1 +1,1 @@
-New Order #{{ $order->order_number }} - Verin Decor
+New Order #{{ $order->order_number }} - Verin Group

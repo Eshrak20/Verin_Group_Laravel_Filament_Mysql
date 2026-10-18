@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,25 +9,28 @@
     <style>
         {!! $emailCss !!}
     </style>
-    </head>
+</head>
 
 <body>
     <div class="email-container">
         @include('emails.components.header')
 
         <div class="email-content">
-            <h1>A New Order Has Been Received!</h1>
+            <h1 class="main-title">
+                A New Order Has Been Received!
+            </h1>
 
             <p>Hello Admin,</p>
 
-            <p>
+            <p class="intro-text">
                 A new order has been placed on your store.
-                Please review the details below.
+                Please review the order details below.
             </p>
 
-            <h2>
-                Order Number: {{ $order->order_number }}
-            </h2>
+            <div class="order-number">
+                <span>Order Number</span>
+                <strong>{{ $order->order_number }}</strong>
+            </div>
 
             @include('emails.partials.customer-info')
 
@@ -39,7 +41,7 @@
             @include('emails.partials.order-summary')
 
             @include('emails.components.button', [
-                'url' => 'http://test.veringroup.com/',
+                'url' => 'https://veringroup.com',
                 'text' => 'Visit Store',
             ])
         </div>
