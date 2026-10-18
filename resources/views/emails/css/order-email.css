@@ -1,0 +1,175 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f4f5f7;
+    color: #252525;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.email-container {
+    width: 100%;
+    background-color: #f4f5f7;
+    padding: 24px 10px;
+}
+
+.email-content {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 28px;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+}
+
+.email-header {
+    padding: 22px;
+    text-align: center;
+    background-color: #173f35;
+    color: #ffffff;
+}
+
+.brand-name {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: 1px;
+}
+
+.header-subtitle {
+    margin: 5px 0 0;
+    color: #e5eee9;
+}
+
+.main-title {
+    margin-top: 28px;
+    color: #173f35;
+    font-size: 22px;
+}
+
+.intro-text {
+    color: #555555;
+}
+
+.section-title {
+    margin-top: 28px;
+    padding-bottom: 8px;
+    color: #173f35;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 17px;
+}
+
+.details-table,
+.products-table,
+.totals-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.details-table td,
+.products-table th,
+.products-table td,
+.totals-table td {
+    padding: 11px 8px;
+    border-bottom: 1px solid #eeeeee;
+    vertical-align: top;
+}
+
+.detail-label {
+    width: 36%;
+    color: #666666;
+}
+
+.detail-value {
+    color: #222222;
+    overflow-wrap: anywhere;
+}
+
+.products-table th {
+    background-color: #f4f7f5;
+    color: #173f35;
+    font-size: 12px;
+}
+
+.products-table td {
+    font-size: 12px;
+}
+
+.products-table small,
+.regular-price {
+    color: #888888;
+}
+
+.regular-price {
+    text-decoration: line-through;
+}
+
+.totals-table {
+    margin-top: 18px;
+}
+
+.totals-table td {
+    padding: 9px 8px;
+}
+
+.discount-value {
+    color: #16803c;
+}
+
+.grand-total td {
+    padding-top: 15px;
+    border-top: 2px solid #173f35;
+    border-bottom: none;
+    color: #173f35;
+    font-size: 17px;
+}
+
+.customer-note {
+    padding: 12px;
+    background-color: #f8faf9;
+    overflow-wrap: anywhere;
+}
+
+.button-wrapper {
+    padding: 24px 0;
+}
+
+.email-button {
+    display: inline-block;
+    padding: 12px 22px;
+    background-color: #173f35;
+    color: #ffffff !important;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.email-footer {
+    padding-top: 20px;
+    color: #777777;
+    border-top: 1px solid #e5e7eb;
+    font-size: 12px;
+    text-align: center;
+}
+
+.footer-brand {
+    margin-top: 15px;
+}
+
+@media only screen and (max-width: 600px) {
+    .email-content {
+        padding: 15px;
+    }
+
+    .brand-name {
+        font-size: 23px;
+    }
+
+    .products-table th,
+    .products-table td {
+        padding: 7px 4px;
+        font-size: 10px;
+    }
+
+    .details-table td {
+        padding: 8px 4px;
+    }
+}

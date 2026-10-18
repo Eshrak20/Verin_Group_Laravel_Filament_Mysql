@@ -21,6 +21,7 @@ class Order extends Model
         'transaction_id',
         'payment_status',
         'order_status',
+        'steadfast_tracking_number', // New field
         'subtotal',
         'delivery_charge',
         'discount_amount',

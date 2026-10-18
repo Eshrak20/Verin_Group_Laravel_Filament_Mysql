@@ -1,0 +1,1 @@
+New Order #{{ $order->order_number }} - Verin Decor

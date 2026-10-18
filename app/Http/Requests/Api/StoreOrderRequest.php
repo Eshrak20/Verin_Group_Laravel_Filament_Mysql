@@ -26,7 +26,10 @@ class StoreOrderRequest extends FormRequest
             'district' => ['nullable', 'string', 'max:255'],
             'area' => ['nullable', 'string', 'max:255'],
             'customer_note' => ['nullable', 'string', 'max:2000'],
-
+            'delivery_zone' => [
+                'required',
+                'in:inside_dhaka,outside_dhaka',
+            ],
             'payment_method' => [
                 'required',
                 Rule::in(['cod', 'online']),

@@ -15,7 +15,10 @@ return [
     */
 
     'default' => env('MAIL_MAILER', 'log'),
-
+    'order_notification_email' => env(
+        'ORDER_NOTIFICATION_EMAIL',
+        'eshrakg62@gmail.com'
+    ),
     /*
     |--------------------------------------------------------------------------
     | Mailer Configurations

@@ -11,7 +11,8 @@ class OrderItem extends Model
         'order_id',
         'product_variant_id',
         'product_name',
-        'variant_name',
+        'delivery_zone',
+        'delivery_charge',
         'sku',
         'unit_price',
         'quantity',
@@ -24,6 +25,10 @@ class OrderItem extends Model
             'unit_price' => 'decimal:2',
             'line_total' => 'decimal:2',
             'quantity' => 'integer',
+            'regular_unit_price' => 'decimal:2',
+            'discount_amount' => 'decimal:2',
+            'delivery_charge' => 'decimal:2',
+
         ];
     }
 

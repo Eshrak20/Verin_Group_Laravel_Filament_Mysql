@@ -7,6 +7,7 @@ use App\Http\Requests\Api\StoreOrderRequest;
 use App\Services\OrderService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class OrderController extends Controller
@@ -36,7 +37,6 @@ class OrderController extends Controller
                     'total_amount' => $order->total_amount,
                     'items' => $order->items->map(fn ($item) => [
                         'product_name' => $item->product_name,
-                        'variant_name' => $item->variant_name,
                         'sku' => $item->sku,
                         'unit_price' => $item->unit_price,
                         'quantity' => $item->quantity,
@@ -44,9 +44,13 @@ class OrderController extends Controller
                     ]),
                 ],
             ], 201);
+        } catch (ValidationException $exception) {
+            throw $exception;
         } catch (Throwable $exception) {
             Log::error('Order creation failed.', [
-                'exception' => $exception,
+                'message' => $exception->getMessage(),
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
             ]);
 
             return response()->json([
