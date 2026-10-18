@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ClientReviewController;
 use App\Http\Controllers\Api\FooterController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\SavedProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -28,7 +29,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/client-reviews', [ClientReviewController::class, 'index']);
     Route::get('/clients', [ClientReviewController::class, 'clients']);
 
-    
+
     Route::post('/orders', [OrderController::class, 'store'])
         ->name('api.v1.orders.store');
     // Authenticated customer's orders only
@@ -80,4 +81,18 @@ Route::prefix('v1')->group(function () {
             Route::post('/change-password', [AuthController::class, 'changePassword']);
         });
     });
+    Route::middleware('auth:sanctum')
+        ->prefix('saved-products')
+        ->name('api.v1.saved-products.')
+        ->controller(SavedProductController::class)
+        ->group(function () {
+            Route::post('/', 'store')->name('store');
+            Route::get('/', 'index')->name('index');
+            Route::get('/{productId}', 'show')
+                ->whereNumber('productId')
+                ->name('show');
+            Route::delete('/{productId}', 'destroy')
+                ->whereNumber('productId')
+                ->name('destroy');
+        });
 });
