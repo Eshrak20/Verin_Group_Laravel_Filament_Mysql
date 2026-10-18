@@ -12,9 +12,11 @@ use Illuminate\Validation\ValidationException;
 
 class OrderService
 {
-    public function createOrder(array $data): Order
-    {
-        $order = DB::transaction(function () use ($data) {
+    public function createOrder(
+        array $data,
+        int|string|null $userId = null,
+    ): Order {
+        $order = DB::transaction(function () use ($data, $userId) {
             $subtotal = 0;
             $discountAmount = 0;
             $deliveryCharge = 0;
@@ -163,6 +165,7 @@ class OrderService
             $isOnline = $data['payment_method'] === 'online';
 
             $order = Order::create([
+                'user_id' => $userId,
                 'order_number' => $this->generateOrderNumber(),
 
                 'customer_name' => $data['customer_name'],

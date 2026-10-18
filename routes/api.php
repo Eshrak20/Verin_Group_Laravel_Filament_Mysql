@@ -27,8 +27,25 @@ Route::prefix('v1')->group(function () {
     Route::get('/banners/{pageName}', [BannerController::class, 'getBanner']);
     Route::get('/client-reviews', [ClientReviewController::class, 'index']);
     Route::get('/clients', [ClientReviewController::class, 'clients']);
+
+    
     Route::post('/orders', [OrderController::class, 'store'])
         ->name('api.v1.orders.store');
+    // Authenticated customer's orders only
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/orders', [OrderController::class, 'index'])
+            ->name('api.v1.orders.index');
+
+        Route::get('/orders/{orderNumber}/status', [
+            OrderController::class,
+            'status',
+        ])->name('api.v1.orders.status');
+
+        Route::get('/orders/{orderNumber}', [
+            OrderController::class,
+            'show',
+        ])->name('api.v1.orders.show');
+    });
 
     Route::get('/blogs', [BlogController::class, 'index']);
     Route::get('/blogs/{slug}', [BlogController::class, 'show']);
