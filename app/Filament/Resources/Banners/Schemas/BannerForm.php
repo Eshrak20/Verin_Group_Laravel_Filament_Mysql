@@ -27,9 +27,11 @@ class BannerForm
                     ->required(),
 
                 FileUpload::make('banner_image')
+                    ->label('Banner Image')
                     ->image()
                     ->disk('public')
                     ->directory('banners')
+                    ->visibility('public')
                     ->required(),
                 Toggle::make('status')
                     ->default(true),

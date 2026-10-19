@@ -23,7 +23,7 @@ Route::prefix('v1')->group(function () {
 
 
 
-    Route::get('/products', [ProductController::class, 'index']);
+    Route::post('/products', [ProductController::class, 'index']);
     Route::get('/products/{slug}', [ProductController::class, 'show']);
     Route::get('/banners/{pageName}', [BannerController::class, 'getBanner']);
     Route::get('/client-reviews', [ClientReviewController::class, 'index']);
