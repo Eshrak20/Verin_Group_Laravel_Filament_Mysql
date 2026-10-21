@@ -16,6 +16,19 @@ class ViewOrder extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            // Edit Order button
+            Action::make('editOrder')
+                ->label('Edit Order')
+                ->icon('heroicon-o-pencil-square')
+                ->color('warning')
+                ->url(
+                    fn (Order $record): string =>
+                        OrderResource::getUrl('edit', [
+                            'record' => $record,
+                        ])
+                ),
+
+            // Add or update Steadfast tracking number
             Action::make('updateSteadfastTracking')
                 ->label(
                     $this->record->steadfast_tracking_number
@@ -52,7 +65,9 @@ class ViewOrder extends ViewRecord
 
                     Notification::make()
                         ->title('Tracking number saved')
-                        ->body('The Steadfast tracking number has been updated.')
+                        ->body(
+                            'The Steadfast tracking number has been updated.'
+                        )
                         ->success()
                         ->send();
                 }),
