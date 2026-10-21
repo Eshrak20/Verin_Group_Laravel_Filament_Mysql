@@ -33,7 +33,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/orders', [OrderController::class, 'store'])
         ->name('api.v1.orders.store');
     // Authenticated customer's orders only
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware(['auth:sanctum', 'not.blocked'])->group(function () {
         Route::get('/orders', [OrderController::class, 'index'])
             ->name('api.v1.orders.index');
 
@@ -75,13 +75,13 @@ Route::prefix('v1')->group(function () {
         Route::post('/verify-email', [AuthController::class, 'verifyEmail'])
             ->middleware('throttle:auth-sensitive');
 
-        Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware(['auth:sanctum', 'not.blocked'])->group(function () {
             Route::get('/myprofile', [AuthController::class, 'myprofile']);
             Route::post('/logout', [AuthController::class, 'logout']);
             Route::post('/change-password', [AuthController::class, 'changePassword']);
         });
     });
-    Route::middleware('auth:sanctum')
+    Route::middleware(['auth:sanctum', 'not.blocked'])
         ->prefix('saved-products')
         ->name('api.v1.saved-products.')
         ->controller(SavedProductController::class)

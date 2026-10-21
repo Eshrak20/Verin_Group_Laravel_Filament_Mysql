@@ -46,6 +46,11 @@ class AuthService
     public function login(string $email, string $password): array
     {
         $user = User::query()->where('email', $email)->first();
+        if ($user && $user->is_blocked) {
+            throw ValidationException::withMessages([
+                'email' => ['Your account has been blocked. Please contact support.'],
+            ]);
+        }
 
         if (! $user) {
             $pendingUser = PendingUser::query()->where('email', $email)->first();
@@ -202,6 +207,11 @@ class AuthService
 
         $verification = $this->otpService->verifyUserOtp($email, $purpose, $otp);
         $user = User::query()->where('email', $verification->email)->firstOrFail();
+        if ($user->is_blocked) {
+            throw ValidationException::withMessages([
+                'email' => ['Your account has been blocked. Please contact support.'],
+            ]);
+        }
         $verification->delete();
 
         $data = ['verified' => true];

@@ -16,6 +16,7 @@ use Laravel\Sanctum\HasApiTokens;
     'name',
     'email',
     'password',
+    'email_verified_at',
     'is_filament_user',
     'is_blocked',
 ])]
