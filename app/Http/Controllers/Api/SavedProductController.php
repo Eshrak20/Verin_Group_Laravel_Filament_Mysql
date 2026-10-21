@@ -54,11 +54,14 @@ class SavedProductController extends Controller
 
         $savedProducts = SavedProduct::query()
             ->where('user_id', $request->user()->id)
-            ->with('product')
+            ->with([
+                'product.deliveryCharge',
+                'product.variants.inventories',
+            ])
             ->latest()
             ->paginate($perPage);
 
-        $savedProducts->through(fn (SavedProduct $savedProduct) => [
+        $savedProducts->through(fn(SavedProduct $savedProduct) => [
             'id' => $savedProduct->id,
             'saved_at' => $savedProduct->created_at,
             'product' => $savedProduct->product,
@@ -88,7 +91,10 @@ class SavedProductController extends Controller
         $savedProduct = SavedProduct::query()
             ->where('user_id', $request->user()->id)
             ->where('product_id', $productId)
-            ->with('product')
+            ->with([
+                'product.deliveryCharge',
+                'product.variants.inventories',
+            ])
             ->firstOrFail();
 
         return response()->json([

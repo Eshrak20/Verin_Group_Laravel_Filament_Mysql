@@ -13,7 +13,7 @@ class ProductResponseService
     public function transformCollection(array|Collection $products): array
     {
         return collect($products)
-            ->map(fn (Product $product): array => $this->transformForListing($product))
+            ->map(fn(Product $product): array => $this->transformForListing($product))
             ->values()
             ->all();
     }
@@ -34,7 +34,7 @@ class ProductResponseService
             'short_description' => $product->short_description,
             'is_featured' => $product->is_featured,
             'status' => $product->status,
-
+            'stock' => $variant->stock,
             'category' => $product->category?->name,
             'sub_category' => $product->subCategory?->name,
             'brand' => $product->brand?->name,
@@ -112,7 +112,7 @@ class ProductResponseService
             |
             */
             'variants' => $product->variants
-                ->map(fn ($variant) => [
+                ->map(fn($variant) => [
                     'sku' => $variant->sku,
                     'price' => $variant->price,
                     'sale_price' => $variant->sale_price,
@@ -130,7 +130,7 @@ class ProductResponseService
                         ->all(),
 
                     'attributes' => $variant->attributeValues
-                        ->map(fn ($attributeValue) => [
+                        ->map(fn($attributeValue) => [
                             'id' => $attributeValue->attribute_id,
                             'name' => $attributeValue->attribute?->name,
                             'value_id' => $attributeValue->id,

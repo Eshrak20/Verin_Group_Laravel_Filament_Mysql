@@ -19,8 +19,7 @@ class ProductController extends Controller
         protected ProductFilterService $filterService,
         protected ProductResponseService $responseService,
         protected ProductPriceService $priceService
-    ) {
-    }
+    ) {}
 
     /**
      * Product listing.
@@ -53,6 +52,8 @@ class ProductController extends Controller
 
                 // Required for product-card images
                 'variants.images',
+                // Inventory for available stock calculation
+                'variants.inventories',
             ])
             ->where('category_id', $request->category_id);
 
@@ -205,7 +206,7 @@ class ProductController extends Controller
         if ($request->boolean('in_stock')) {
             $query->whereHas(
                 'variants',
-                fn ($q) => $q->where('stock', '>', 0)
+                fn($q) => $q->where('stock', '>', 0)
             );
 
             return;
@@ -213,7 +214,7 @@ class ProductController extends Controller
 
         $query->whereDoesntHave(
             'variants',
-            fn ($q) => $q->where('stock', '>', 0)
+            fn($q) => $q->where('stock', '>', 0)
         );
     }
 
@@ -283,8 +284,10 @@ class ProductController extends Controller
                 'category',
                 'subCategory',
                 'brand',
+                'deliveryCharge',
                 'variants.images',
                 'variants.videos',
+                'variants.inventories',
                 'variants.attributeValues.attribute',
                 'attributes',
             ])
@@ -298,10 +301,22 @@ class ProductController extends Controller
             ], 404);
         }
 
+        $productData = $this->responseService->transformProduct($product);
+
+        $productData['delivery_charge'] = $product->deliveryCharge
+            ? [
+                'id' => $product->deliveryCharge->id,
+                'name' => $product->deliveryCharge->name,
+                'inside_dhaka_charge' => (float) $product->deliveryCharge->inside_dhaka_charge,
+                'outside_dhaka_charge' => (float) $product->deliveryCharge->outside_dhaka_charge,
+                'description' => $product->deliveryCharge->description,
+            ]
+            : null;
+
         return response()->json([
             'success' => true,
             'message' => 'Product retrieved successfully.',
-            'data' => $this->responseService->transformProduct($product),
+            'data' => $productData,
         ]);
     }
 }

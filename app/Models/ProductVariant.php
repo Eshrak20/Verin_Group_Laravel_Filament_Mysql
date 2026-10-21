@@ -18,11 +18,18 @@ class ProductVariant extends Model
         'sale_price',
         'status',
     ];
-
-    public function product()
+    public function getStockAttribute(): int
     {
-        return $this->belongsTo(Product::class);
+        return $this->inventories->sum(
+            fn(Inventory $inventory) => max(
+                0,
+                $inventory->stock - $inventory->reserved_stock
+            )
+        );
     }
+    protected $appends = [
+        'stock',
+    ];
 
     public function attributeValues()
     {
@@ -51,5 +58,9 @@ class ProductVariant extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class, 'product_variant_id');
+    }
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
     }
 }

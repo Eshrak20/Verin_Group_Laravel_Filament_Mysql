@@ -16,24 +16,46 @@ class DeliveryChargesTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->label('Delivery Charge')
+                    ->searchable()
+                    ->sortable()
+                    ->description(fn ($record) => $record->description),
+
                 TextColumn::make('inside_dhaka_charge')
-                    ->numeric()
+                    ->label('Inside Dhaka')
+                    ->money('BDT')
                     ->sortable(),
+
                 TextColumn::make('outside_dhaka_charge')
-                    ->numeric()
+                    ->label('Outside Dhaka')
+                    ->money('BDT')
                     ->sortable(),
+
+                TextColumn::make('products_count')
+                    ->label('Linked Products')
+                    ->counts('products')
+                    ->badge()
+                    ->color('info')
+                    ->sortable(),
+
                 IconColumn::make('status')
-                    ->boolean(),
+                    ->label('Status')
+                    ->boolean()
+                    ->sortable(),
+
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Created')
+                    ->dateTime('d M Y, h:i A')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Last Updated')
+                    ->dateTime('d M Y, h:i A')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 //
             ])

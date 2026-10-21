@@ -41,7 +41,7 @@
             @include('emails.partials.order-summary')
 
             @include('emails.components.button', [
-                'url' => 'https://veringroup.com',
+                'url' => 'https://test.veringroup.com/admin/orders',
                 'text' => 'Visit Store',
             ])
         </div>
