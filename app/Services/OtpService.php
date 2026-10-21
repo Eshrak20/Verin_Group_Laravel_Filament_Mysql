@@ -95,7 +95,6 @@ class OtpService
                 'otp' => ['Too many incorrect attempts. Please request a new OTP.'],
             ]);
         }
-
         if (! $verification->matches($otp)) {
             $verification->increment('attempts');
 
@@ -103,6 +102,11 @@ class OtpService
                 'otp' => ['The OTP is invalid or expired.'],
             ]);
         }
+
+        if ($purpose === VerificationPurpose::EmailVerification) {
+            User::where('email', $email)->firstOrFail()->markEmailAsVerified();
+        }
+
 
         return $verification;
     }
