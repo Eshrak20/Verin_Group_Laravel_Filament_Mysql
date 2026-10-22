@@ -23,9 +23,22 @@ class ProductResponseService
      *
      * Only returns the fields required by the product card.
      */
+    /**
+     * Transform a product for product listing/card.
+     */
     public function transformForListing(Product $product): array
     {
-        $variant = $product->variants->first();
+        $variant = $product->variants->firstWhere('status', true)
+            ?? $product->variants->first();
+
+        $availableStock = $product->variants->sum(
+            fn($item) => $item->inventories->sum(
+                fn($inventory) => max(
+                    0,
+                    (int) $inventory->stock - (int) ($inventory->reserved ?? 0)
+                )
+            )
+        );
 
         return [
             'id' => $product->id,
@@ -34,7 +47,8 @@ class ProductResponseService
             'short_description' => $product->short_description,
             'is_featured' => $product->is_featured,
             'status' => $product->status,
-            'stock' => $variant->stock,
+            'stock' => $availableStock,
+
             'category' => $product->category?->name,
             'sub_category' => $product->subCategory?->name,
             'brand' => $product->brand?->name,
@@ -42,8 +56,10 @@ class ProductResponseService
             'variant' => $variant
                 ? [
                     'sku' => $variant->sku,
-                    'price' => $variant->price,
-                    'sale_price' => $variant->sale_price,
+                    'price' => (float) $variant->price,
+                    'sale_price' => $variant->sale_price !== null
+                        ? (float) $variant->sale_price
+                        : null,
 
                     'images' => $variant->images
                         ->take(2)
@@ -54,7 +70,6 @@ class ProductResponseService
                 : null,
         ];
     }
-
     /**
      * Transform a single product for the product details page.
      */

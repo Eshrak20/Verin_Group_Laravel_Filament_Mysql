@@ -7,10 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 class ProductFilterService
 {
     /**
-     * Generate filters from the current category/context.
-     *
-     * Attribute selections are intentionally NOT applied.
-     * Options contain unique attribute values without counts.
+     * Generate unique attribute filters from the current query context.
      */
     public function getDynamicFilters(Builder $query): array
     {
@@ -42,6 +39,7 @@ class ProductFilterService
                         ];
                     }
 
+                    // Associative keys remove duplicate values.
                     $filters[$attributeId]['options'][$value] = $value;
                 }
             }
