@@ -12,7 +12,8 @@ use Illuminate\Validation\Rule;
 class SavedProductController extends Controller
 {
     /**
-     * Save a product.
+     * Toggle a product in the authenticated user's saved products.
+     * Save if not saved; remove if already saved.
      */
     public function store(Request $request): JsonResponse
     {
@@ -29,17 +30,33 @@ class SavedProductController extends Controller
             'product_id' => $validated['product_id'],
         ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => $savedProduct->wasRecentlyCreated
-                ? 'Product saved successfully.'
-                : 'Product is already saved.',
-            'data' => [
+        // Already saved: remove it.
+        if (! $savedProduct->wasRecentlyCreated) {
+            $savedProduct->delete();
+
+            return $this->response(
+                success: true,
+                message: 'Product removed from saved products.',
+                code: 200,
+                data: [
+                    'product_id' => (int) $validated['product_id'],
+                    'is_saved' => false,
+                ],
+            );
+        }
+
+        // Not saved: save it.
+        return $this->response(
+            success: true,
+            message: 'Product saved successfully.',
+            code: 201,
+            data: [
                 'id' => $savedProduct->id,
                 'product_id' => $savedProduct->product_id,
                 'saved_at' => $savedProduct->created_at,
+                'is_saved' => true,
             ],
-        ], $savedProduct->wasRecentlyCreated ? 201 : 200);
+        );
     }
 
     /**
@@ -61,24 +78,32 @@ class SavedProductController extends Controller
             ->latest()
             ->paginate($perPage);
 
-        $savedProducts->through(fn(SavedProduct $savedProduct) => [
-            'id' => $savedProduct->id,
-            'saved_at' => $savedProduct->created_at,
-            'product' => $savedProduct->product,
-        ]);
+        $data = $savedProducts->getCollection()
+            ->map(fn (SavedProduct $savedProduct) => [
+                'id' => $savedProduct->id,
+                'saved_at' => $savedProduct->created_at,
+                'product' => $savedProduct->product
+                    ? $this->formatProduct($savedProduct->product)
+                    : null,
+            ])
+            ->values()
+            ->all();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Saved products retrieved successfully.',
-            'data' => $savedProducts->items(),
-            'pagination' => [
-                'current_page' => $savedProducts->currentPage(),
-                'last_page' => $savedProducts->lastPage(),
-                'per_page' => $savedProducts->perPage(),
-                'total' => $savedProducts->total(),
-                'has_more_pages' => $savedProducts->hasMorePages(),
+        return $this->response(
+            success: true,
+            message: 'Saved products retrieved successfully.',
+            code: 200,
+            data: [
+                'items' => $data,
+                'pagination' => [
+                    'current_page' => $savedProducts->currentPage(),
+                    'last_page' => $savedProducts->lastPage(),
+                    'per_page' => $savedProducts->perPage(),
+                    'total' => $savedProducts->total(),
+                    'has_more_pages' => $savedProducts->hasMorePages(),
+                ],
             ],
-        ]);
+        );
     }
 
     /**
@@ -97,34 +122,43 @@ class SavedProductController extends Controller
             ])
             ->firstOrFail();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Saved product retrieved successfully.',
-            'data' => [
+        return $this->response(
+            success: true,
+            message: 'Saved product retrieved successfully.',
+            code: 200,
+            data: [
                 'id' => $savedProduct->id,
                 'saved_at' => $savedProduct->created_at,
-                'product' => $savedProduct->product,
+                'product' => $savedProduct->product
+                    ? $this->formatProduct($savedProduct->product)
+                    : null,
             ],
-        ]);
+        );
     }
 
     /**
-     * Remove a saved product.
+     * Format product data and return delivery charges as JSON numbers.
      */
-    public function destroy(
-        Request $request,
-        int $productId
-    ): JsonResponse {
-        $savedProduct = SavedProduct::query()
-            ->where('user_id', $request->user()->id)
-            ->where('product_id', $productId)
-            ->firstOrFail();
+    private function formatProduct(Product $product): array
+    {
+        $data = $product->toArray();
 
-        $savedProduct->delete();
+        // Eloquent serializes the deliveryCharge relation as delivery_charge.
+        if (isset($data['delivery_charge'])) {
+            foreach ([
+                'inside_dhaka_charge',
+                'outside_dhaka_charge',
+            ] as $field) {
+                if (
+                    isset($data['delivery_charge'][$field])
+                    && is_numeric($data['delivery_charge'][$field])
+                ) {
+                    $data['delivery_charge'][$field] =
+                        (float) $data['delivery_charge'][$field];
+                }
+            }
+        }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Product removed from saved products.',
-        ]);
+        return $data;
     }
 }

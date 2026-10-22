@@ -94,9 +94,5 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             Route::get('/{productId}', 'show')
                 ->whereNumber('productId')
                 ->name('show');
-
-            Route::delete('/{productId}', 'destroy')
-                ->whereNumber('productId')
-                ->name('destroy');
         });
 });
