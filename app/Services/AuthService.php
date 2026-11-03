@@ -114,7 +114,35 @@ class AuthService
             'token' => $user->createToken('customer')->plainTextToken,
         ];
     }
+    public function updateProfile(User $user, array $data): array
+    {
+        $userData = [];
 
+        if (array_key_exists('name', $data)) {
+            $userData['name'] = $data['name'];
+        }
+
+        $profileData = collect($data)
+            ->except(['name'])
+            ->all();
+
+        if (! empty($userData)) {
+            $user->update($userData);
+        }
+
+        if (! empty($profileData)) {
+            $user->profile()->updateOrCreate(
+                ['user_id' => $user->id],
+                $profileData,
+            );
+        }
+
+        return [
+            'user' => $this->userPayload(
+                $user->fresh()->load('profile')
+            ),
+        ];
+    }
     /**
      * @return array<string, mixed>
      */

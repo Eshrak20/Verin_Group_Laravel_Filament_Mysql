@@ -11,6 +11,7 @@ use App\Http\Requests\Api\V1\Auth\ResendOtpRequest;
 use App\Http\Requests\Api\V1\Auth\ResetPasswordRequest;
 use App\Http\Requests\Api\V1\Auth\SendOtpRequest;
 use App\Http\Requests\Api\V1\Auth\SignupRequest;
+use App\Http\Requests\Api\V1\Auth\UpdateProfileRequest;
 use App\Http\Requests\Api\V1\Auth\VerifyEmailRequest;
 use App\Http\Requests\Api\V1\Auth\VerifyOtpRequest;
 use App\Services\AuthService;
@@ -50,7 +51,18 @@ class AuthController extends Controller
             $this->authService->user($request->user()),
         );
     }
-
+    public function updateProfile(UpdateProfileRequest $request): JsonResponse
+    {
+        return $this->response(
+            true,
+            'Profile updated successfully.',
+            200,
+            $this->authService->updateProfile(
+                $request->user(),
+                $request->validated(),
+            ),
+        );
+    }
     public function logout(Request $request): JsonResponse
     {
         $this->authService->logout($request->user());
@@ -143,5 +155,4 @@ class AuthController extends Controller
         return VerificationPurpose::tryFrom($request->string('purpose')->toString())
             ?? VerificationPurpose::EmailVerification;
     }
- 
 }

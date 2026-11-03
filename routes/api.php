@@ -77,6 +77,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
         Route::middleware(['auth:sanctum', 'not.blocked'])->group(function () {
             Route::get('/myprofile', [AuthController::class, 'myprofile']);
+            Route::patch('/myprofile', [AuthController::class, 'updateProfile']);
             Route::post('/logout', [AuthController::class, 'logout']);
             Route::post('/change-password', [AuthController::class, 'changePassword']);
         });
