@@ -29,7 +29,7 @@ class SavedProductController extends Controller
             'product_id' => $validated['product_id'],
         ]);
 
-        if (! $savedProduct->wasRecentlyCreated) {
+        if (!$savedProduct->wasRecentlyCreated) {
             $savedProduct->delete();
 
             return $this->response(
@@ -78,11 +78,12 @@ class SavedProductController extends Controller
             ->paginate($perPage);
 
         $products = $savedProducts->getCollection()
-            ->map(fn (SavedProduct $savedProduct) =>
-                $this->formatProduct(
-                    $savedProduct->product,
-                    $savedProduct->id
-                )
+            ->map(
+                fn(SavedProduct $savedProduct) =>
+                    $this->formatProduct(
+                        $savedProduct->product,
+                        $savedProduct->id
+                    )
             )
             ->values()
             ->all();
@@ -121,7 +122,16 @@ class SavedProductController extends Controller
                 'product.deliveryCharge',
                 'product.variants.inventories',
             ])
-            ->firstOrFail();
+            ->first();
+
+        if (!$savedProduct) {
+            return $this->response(
+                success: false,
+                message: 'This product is not in your saved products.',
+                code: 404,
+                data: null,
+            );
+        }
 
         return $this->response(
             success: true,
@@ -148,13 +158,13 @@ class SavedProductController extends Controller
 
         // Select the cheapest variant using its effective selling price.
         $selectedVariant = $variants
-            ->sortBy(fn ($variant) => $this->effectivePrice($variant))
+            ->sortBy(fn($variant) => $this->effectivePrice($variant))
             ->first();
 
         // Calculate available stock across active variants.
         $availableStock = $variants->sum(
-            fn ($variant) => $variant->inventories->sum(
-                fn ($inventory) => max(
+            fn($variant) => $variant->inventories->sum(
+                fn($inventory) => max(
                     0,
                     (float) $inventory->stock
                     - (float) $inventory->reserved_stock
@@ -183,7 +193,7 @@ class SavedProductController extends Controller
 
             'name' => $product->name,
             'slug' => $product->slug,
-            'image' => $product->thumbnail,
+            'image' => $product->variants->first()?->images->first(),
 
             'category_name' => $product->category?->name,
             'subcategory_name' => $product->subCategory?->name,
