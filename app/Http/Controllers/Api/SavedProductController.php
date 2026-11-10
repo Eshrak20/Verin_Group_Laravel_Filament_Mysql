@@ -193,7 +193,7 @@ class SavedProductController extends Controller
 
             'name' => $product->name,
             'slug' => $product->slug,
-            'image' => $product->variants->first()?->images->first(),
+            'image' => $product->variants->first()?->images->first()?->image_url,
 
             'category_name' => $product->category?->name,
             'subcategory_name' => $product->subCategory?->name,
