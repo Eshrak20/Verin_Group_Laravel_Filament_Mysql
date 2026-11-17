@@ -55,6 +55,7 @@ class ProductResponseService
 
             'variant' => $variant
                 ? [
+                    'id' => $variant->id,
                     'sku' => $variant->sku,
                     'price' => (float) $variant->price,
                     'sale_price' => $variant->sale_price !== null
@@ -207,9 +208,9 @@ class ProductResponseService
                 $alreadyExists = collect(
                     $attributes[$attribute->id]['values']
                 )->contains(
-                    'id',
-                    $attributeValue->id
-                );
+                        'id',
+                        $attributeValue->id
+                    );
 
                 if (!$alreadyExists) {
                     $attributes[$attribute->id]['values'][] = [
