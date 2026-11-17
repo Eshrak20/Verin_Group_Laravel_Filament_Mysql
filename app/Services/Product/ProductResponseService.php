@@ -129,6 +129,7 @@ class ProductResponseService
             */
             'variants' => $product->variants
                 ->map(fn($variant) => [
+                    'id' => $variant->id,
                     'sku' => $variant->sku,
                     'price' => $variant->price,
                     'sale_price' => $variant->sale_price,
