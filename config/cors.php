@@ -5,7 +5,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:5173', 'https://e-commerce-hazel.vercel.app', 'https://veringroup.com'], // <-- your Vite frontend
+    'allowed_origins' => ['http://localhost:5173', 'https://e-commerce-hazel.vercel.app', 'https://veringroup.com','http://192.168.0.104:5173'], // <-- your Vite frontend
 
     'allowed_origins_patterns' => [],
 
